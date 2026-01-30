@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: "\u4E0A"
   m_EditorClassIdentifier: 
   cardName: UP
-  cardType: 0
   cardSprite: {fileID: 0}
-  direction: 0
+  cardColor: {r: 0.5134016, g: 1, b: 0, a: 1}
+  direction: 1
   stepCount: 0
-  actionName: 
-  expressionName: 
+  isPause: 0
+  actionType: 0
+  expressionType: 0
   valuePoints: 2
   buyCost: 2
   sellValue: 1
-  cardColor: {r: 0.5134016, g: 1, b: 0, a: 1}

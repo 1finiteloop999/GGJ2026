@@ -15,11 +15,11 @@ MonoBehaviour:
   cardName: 2
   cardSprite: {fileID: 0}
   cardColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
-  direction: 1
+  direction: 0
   stepCount: 2
   isPause: 0
   actionType: 0
   expressionType: 0
-  valuePoints: 3
-  buyCost: 3
+  valuePoints: 2
+  buyCost: 2
   sellValue: 1
