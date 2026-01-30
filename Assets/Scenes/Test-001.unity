@@ -3187,15 +3187,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b285e34c40966f04bb201de848bcfad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnSprite: {fileID: 0}
-  useAnimator: 0
-  spriteUp: {fileID: 0}
-  spriteDown: {fileID: 0}
-  spriteLeft: {fileID: 0}
-  spriteRight: {fileID: 0}
+  visualData: {fileID: 11400000, guid: a0ad2148a8ed2d7458dd05c3964c9214, type: 2}
+  defaultSprite: {fileID: 0}
   pawnColor: {r: 0, g: 0.30584526, b: 1, a: 1}
   moveSpeed: 5
   scaleRatio: 0.8
+  actionDuration: 1
+  pauseDuration: 0.5
   gridPosition: {x: 0, y: 0}
 --- !u!4 &1583926846
 Transform:
@@ -4095,15 +4093,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b285e34c40966f04bb201de848bcfad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnSprite: {fileID: 0}
-  useAnimator: 0
-  spriteUp: {fileID: 0}
-  spriteDown: {fileID: 0}
-  spriteLeft: {fileID: 0}
-  spriteRight: {fileID: 0}
+  visualData: {fileID: 11400000, guid: 124a81a3cdf04464a9c42e2ccf225502, type: 2}
+  defaultSprite: {fileID: 0}
   pawnColor: {r: 1, g: 0, b: 0, a: 1}
   moveSpeed: 5
   scaleRatio: 0.8
+  actionDuration: 1
+  pauseDuration: 0.5
   gridPosition: {x: 0, y: 0}
 --- !u!4 &2030142530
 Transform:

@@ -146,7 +146,7 @@ public class SlotManager : MonoBehaviour
             if (slot != null && !slot.IsEmpty && slot.CurrentCard != null && slot.CurrentCard.CardData != null)
             {
                 cards.Add(slot.CurrentCard.CardData);
-                Debug.Log($"[SlotManager] 卡槽{slot.SlotIndex}: {slot.CurrentCard.CardData.cardName} (类型:{slot.CurrentCard.CardData.cardType})");
+                Debug.Log($"[SlotManager] 卡槽{slot.SlotIndex}: {slot.CurrentCard.CardData.GetDescription()}");
             }
         }
 
@@ -155,55 +155,92 @@ public class SlotManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 解析卡槽生成移动指令列表
-    /// 规则：方向牌+步数牌 = 一个完整指令
+    /// 解析卡槽生成移动指令列表（用于路径预览）
     /// </summary>
     public List<MoveCommand> GenerateCommands()
     {
         List<MoveCommand> commands = new List<MoveCommand>();
         List<CardData> cards = GetSlotCards();
 
-        Debug.Log($"[SlotManager] 开始解析 {cards.Count} 张卡牌生成指令");
+        Debug.Log($"[SlotManager] 开始解析 {cards.Count} 张卡牌生成移动指令");
 
-        Direction? currentDirection = null;
+        DirectionType currentDirection = DirectionType.None;
 
         foreach (var card in cards)
         {
-            if (card.cardType == CardType.Direction)
+            // 跳过停顿、动作、表情卡（不产生移动）
+            if (card.IsPauseCard || card.IsActionCard || card.IsExpressionCard)
             {
-                // 如果之前有方向但没步数，默认1步
-                if (currentDirection.HasValue)
-                {
-                    commands.Add(new MoveCommand(currentDirection.Value, 1));
-                    Debug.Log($"[SlotManager] 生成指令: {currentDirection.Value} 1步 (默认)");
-                }
-                currentDirection = card.direction;
-                Debug.Log($"[SlotManager] 记录方向: {card.direction}");
+                continue;
             }
-            else if (card.cardType == CardType.Step)
+
+            // 方向卡（只改变方向）
+            if (card.IsDirectionCard)
             {
-                if (currentDirection.HasValue)
+                // 如果之前有方向但没步数，不生成指令（因为方向卡只改变方向）
+                currentDirection = card.direction;
+                Debug.Log($"[SlotManager] 记录方向: {currentDirection}");
+                continue;
+            }
+
+            // 步数卡（使用当前方向移动）
+            if (card.IsStepCard)
+            {
+                if (currentDirection != DirectionType.None)
                 {
-                    commands.Add(new MoveCommand(currentDirection.Value, card.stepCount));
-                    Debug.Log($"[SlotManager] 生成指令: {currentDirection.Value} {card.stepCount}步");
-                    currentDirection = null;
+                    Direction dir = ConvertDirection(currentDirection);
+                    commands.Add(new MoveCommand(dir, card.stepCount));
+                    Debug.Log($"[SlotManager] 生成指令: {dir} {card.stepCount}步");
                 }
                 else
                 {
                     Debug.Log($"[SlotManager] 步数牌 {card.stepCount} 被忽略（没有方向）");
                 }
+                continue;
             }
-        }
 
-        // 处理末尾只有方向没有步数的情况
-        if (currentDirection.HasValue)
-        {
-            commands.Add(new MoveCommand(currentDirection.Value, 1));
-            Debug.Log($"[SlotManager] 生成指令: {currentDirection.Value} 1步 (末尾默认)");
+            // 方向+步数组合卡
+            if (card.direction != DirectionType.None && card.stepCount > 0)
+            {
+                currentDirection = card.direction;
+                Direction dir = ConvertDirection(card.direction);
+                commands.Add(new MoveCommand(dir, card.stepCount));
+                Debug.Log($"[SlotManager] 生成指令: {dir} {card.stepCount}步 (组合卡)");
+                continue;
+            }
+
+            // 只有方向没有步数
+            if (card.direction != DirectionType.None)
+            {
+                currentDirection = card.direction;
+            }
+
+            // 只有步数没有方向
+            if (card.stepCount > 0 && currentDirection != DirectionType.None)
+            {
+                Direction dir = ConvertDirection(currentDirection);
+                commands.Add(new MoveCommand(dir, card.stepCount));
+                Debug.Log($"[SlotManager] 生成指令: {dir} {card.stepCount}步");
+            }
         }
 
         Debug.Log($"[SlotManager] 共生成 {commands.Count} 条移动指令");
         return commands;
+    }
+
+    /// <summary>
+    /// 转换方向类型
+    /// </summary>
+    private Direction ConvertDirection(DirectionType dirType)
+    {
+        return dirType switch
+        {
+            DirectionType.Up => Direction.Up,
+            DirectionType.Down => Direction.Down,
+            DirectionType.Left => Direction.Left,
+            DirectionType.Right => Direction.Right,
+            _ => Direction.Down
+        };
     }
 
     /// <summary>

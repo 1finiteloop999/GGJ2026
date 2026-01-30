@@ -1,16 +1,37 @@
 using UnityEngine;
 
 /// <summary>
-/// 卡牌类型
+/// 方向类型（包含无方向）
 /// </summary>
-public enum CardType
+public enum DirectionType
 {
-    Direction,  // 方向牌（上下左右）
-    Step,       // 步数牌（1、2、3步）
-    Pause,      // 停顿牌
-    Action,     // 动作牌（鞠躬、跳跃、坐下、招手）
-    Expression, // 表情牌（笑、愤怒）
-    Spell       // 法术牌
+    None,   // 无方向
+    Up,     // 上
+    Down,   // 下
+    Left,   // 左
+    Right   // 右
+}
+
+/// <summary>
+/// 动作类型
+/// </summary>
+public enum ActionType
+{
+    None,       // 无动作
+    Bow,        // 鞠躬
+    Jump,       // 跳跃
+    SitDown,    // 坐下
+    Wave        // 招手
+}
+
+/// <summary>
+/// 表情类型
+/// </summary>
+public enum ExpressionType
+{
+    None,   // 无表情
+    Laugh,  // 笑
+    Angry   // 愤怒
 }
 
 /// <summary>
@@ -19,25 +40,40 @@ public enum CardType
 [CreateAssetMenu(fileName = "NewCard", menuName = "MaskMimicry/Card Data")]
 public class CardData : ScriptableObject
 {
-    [Header("基本信息")]
+    [Header("===== 基本信息 =====")]
     public string cardName;
-    public CardType cardType;
+
+    [Header("卡牌美术")]
+    [Tooltip("卡牌显示的图片")]
     public Sprite cardSprite;
 
-    [Header("卡牌效果")]
-    [Tooltip("方向牌：表示移动方向")]
-    public Direction direction;
+    [Tooltip("卡牌背景颜色")]
+    public Color cardColor = Color.white;
 
-    [Tooltip("步数牌：表示移动步数")]
-    public int stepCount = 1;
+    [Header("===== 卡牌效果 =====")]
 
-    [Tooltip("动作牌：动作名称")]
-    public string actionName;
+    [Header("1. 方向（仅管理转向）")]
+    [Tooltip("移动方向，None表示不改变方向")]
+    public DirectionType direction = DirectionType.None;
 
-    [Tooltip("表情牌：表情名称")]
-    public string expressionName;
+    [Header("2. 行动步数")]
+    [Tooltip("移动步数：0=不移动，1/2/3=移动对应格数")]
+    [Range(0, 3)]
+    public int stepCount = 0;
 
-    [Header("价值与经济")]
+    [Header("3. 停顿")]
+    [Tooltip("是否为停顿卡（停顿一拍，不做任何动作）")]
+    public bool isPause = false;
+
+    [Header("4. 动作")]
+    [Tooltip("动作类型，None表示无动作")]
+    public ActionType actionType = ActionType.None;
+
+    [Header("5. 表情")]
+    [Tooltip("表情类型，None表示无表情")]
+    public ExpressionType expressionType = ExpressionType.None;
+
+    [Header("===== 价值与经济 =====")]
     [Tooltip("卡牌价值点数（用于计算得分）")]
     public int valuePoints = 2;
 
@@ -47,38 +83,75 @@ public class CardData : ScriptableObject
     [Tooltip("出售获得的点数")]
     public int sellValue = 1;
 
-    [Header("颜色标识")]
-    public Color cardColor = Color.white;
-
     /// <summary>
     /// 获取卡牌描述
     /// </summary>
     public string GetDescription()
     {
-        switch (cardType)
+        // 停顿卡
+        if (isPause)
         {
-            case CardType.Direction:
-                return direction switch
-                {
-                    Direction.Up => "向上",
-                    Direction.Down => "向下",
-                    Direction.Left => "向左",
-                    Direction.Right => "向右",
-                    _ => "?"
-                };
-            case CardType.Step:
-                return $"{stepCount}步";
-            case CardType.Pause:
-                return "停顿";
-            case CardType.Action:
-                return actionName;
-            case CardType.Expression:
-                return expressionName;
-            case CardType.Spell:
-                return cardName;
-            default:
-                return cardName;
+            return "停顿";
         }
+
+        // 方向卡
+        if (direction != DirectionType.None && stepCount == 0)
+        {
+            return direction switch
+            {
+                DirectionType.Up => "向上",
+                DirectionType.Down => "向下",
+                DirectionType.Left => "向左",
+                DirectionType.Right => "向右",
+                _ => "?"
+            };
+        }
+
+        // 步数卡
+        if (stepCount > 0 && direction == DirectionType.None)
+        {
+            return $"{stepCount}步";
+        }
+
+        // 方向+步数组合卡
+        if (direction != DirectionType.None && stepCount > 0)
+        {
+            string dirName = direction switch
+            {
+                DirectionType.Up => "上",
+                DirectionType.Down => "下",
+                DirectionType.Left => "左",
+                DirectionType.Right => "右",
+                _ => "?"
+            };
+            return $"{dirName}{stepCount}步";
+        }
+
+        // 动作卡
+        if (actionType != ActionType.None)
+        {
+            return actionType switch
+            {
+                ActionType.Bow => "鞠躬",
+                ActionType.Jump => "跳跃",
+                ActionType.SitDown => "坐下",
+                ActionType.Wave => "招手",
+                _ => "动作"
+            };
+        }
+
+        // 表情卡
+        if (expressionType != ExpressionType.None)
+        {
+            return expressionType switch
+            {
+                ExpressionType.Laugh => "笑",
+                ExpressionType.Angry => "愤怒",
+                _ => "表情"
+            };
+        }
+
+        return cardName;
     }
 
     /// <summary>
@@ -86,20 +159,71 @@ public class CardData : ScriptableObject
     /// </summary>
     public string GetCompareKey()
     {
-        switch (cardType)
+        // 停顿卡
+        if (isPause)
         {
-            case CardType.Direction:
-                return $"DIR_{direction}";
-            case CardType.Step:
-                return $"STEP_{stepCount}";
-            case CardType.Pause:
-                return "PAUSE";
-            case CardType.Action:
-                return $"ACT_{actionName}";
-            case CardType.Expression:
-                return $"EXP_{expressionName}";
-            default:
-                return cardName;
+            return "PAUSE";
         }
+
+        // 组合所有有效属性作为key
+        string key = "";
+
+        if (direction != DirectionType.None)
+        {
+            key += $"DIR_{direction}_";
+        }
+
+        if (stepCount > 0)
+        {
+            key += $"STEP_{stepCount}_";
+        }
+
+        if (actionType != ActionType.None)
+        {
+            key += $"ACT_{actionType}_";
+        }
+
+        if (expressionType != ExpressionType.None)
+        {
+            key += $"EXP_{expressionType}_";
+        }
+
+        // 如果什么都没有，返回卡牌名
+        if (string.IsNullOrEmpty(key))
+        {
+            return cardName;
+        }
+
+        return key.TrimEnd('_');
     }
+
+    /// <summary>
+    /// 是否是纯方向卡
+    /// </summary>
+    public bool IsDirectionCard => direction != DirectionType.None && stepCount == 0 && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
+
+    /// <summary>
+    /// 是否是纯步数卡
+    /// </summary>
+    public bool IsStepCard => stepCount > 0 && direction == DirectionType.None && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
+
+    /// <summary>
+    /// 是否是停顿卡
+    /// </summary>
+    public bool IsPauseCard => isPause;
+
+    /// <summary>
+    /// 是否是动作卡
+    /// </summary>
+    public bool IsActionCard => actionType != ActionType.None;
+
+    /// <summary>
+    /// 是否是表情卡
+    /// </summary>
+    public bool IsExpressionCard => expressionType != ExpressionType.None;
+
+    /// <summary>
+    /// 是否会产生移动
+    /// </summary>
+    public bool HasMovement => direction != DirectionType.None || stepCount > 0;
 }

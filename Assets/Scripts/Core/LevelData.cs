@@ -59,43 +59,81 @@ public class LevelData : ScriptableObject
     public int slotCount = 6;
 
     /// <summary>
-    /// 获取NPC移动指令列表（用于演示动画）
+    /// 获取NPC移动指令列表（用于路径预览，兼容旧接口）
     /// </summary>
     public List<MoveCommand> GetNPCCommands()
     {
         List<MoveCommand> commands = new List<MoveCommand>();
 
-        Direction? currentDirection = null;
+        DirectionType currentDirection = DirectionType.None;
 
         foreach (var card in npcCardSequence)
         {
             if (card == null) continue;
 
-            if (card.cardType == CardType.Direction)
+            // 跳过停顿、动作、表情卡
+            if (card.IsPauseCard || card.IsActionCard || card.IsExpressionCard)
             {
-                if (currentDirection.HasValue)
+                continue;
+            }
+
+            // 方向卡
+            if (card.IsDirectionCard)
+            {
+                currentDirection = card.direction;
+                continue;
+            }
+
+            // 步数卡
+            if (card.IsStepCard)
+            {
+                if (currentDirection != DirectionType.None)
                 {
-                    commands.Add(new MoveCommand(currentDirection.Value, 1));
+                    Direction dir = ConvertDirection(currentDirection);
+                    commands.Add(new MoveCommand(dir, card.stepCount));
                 }
+                continue;
+            }
+
+            // 方向+步数组合卡
+            if (card.direction != DirectionType.None && card.stepCount > 0)
+            {
+                currentDirection = card.direction;
+                Direction dir = ConvertDirection(card.direction);
+                commands.Add(new MoveCommand(dir, card.stepCount));
+                continue;
+            }
+
+            // 只有方向
+            if (card.direction != DirectionType.None)
+            {
                 currentDirection = card.direction;
             }
-            else if (card.cardType == CardType.Step)
-            {
-                if (currentDirection.HasValue)
-                {
-                    commands.Add(new MoveCommand(currentDirection.Value, card.stepCount));
-                    currentDirection = null;
-                }
-            }
-            // Pause、Action、Expression 暂不生成移动指令
-        }
 
-        if (currentDirection.HasValue)
-        {
-            commands.Add(new MoveCommand(currentDirection.Value, 1));
+            // 只有步数
+            if (card.stepCount > 0 && currentDirection != DirectionType.None)
+            {
+                Direction dir = ConvertDirection(currentDirection);
+                commands.Add(new MoveCommand(dir, card.stepCount));
+            }
         }
 
         return commands;
+    }
+
+    /// <summary>
+    /// 转换方向类型
+    /// </summary>
+    private Direction ConvertDirection(DirectionType dirType)
+    {
+        return dirType switch
+        {
+            DirectionType.Up => Direction.Up,
+            DirectionType.Down => Direction.Down,
+            DirectionType.Left => Direction.Left,
+            DirectionType.Right => Direction.Right,
+            _ => Direction.Down
+        };
     }
 
     /// <summary>

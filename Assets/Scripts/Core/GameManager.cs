@@ -257,10 +257,11 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(npcAnimationDelay);
 
-        if (npcPawn != null)
+        if (npcPawn != null && currentLevel != null)
         {
-            List<MoveCommand> commands = currentLevel.GetNPCCommands();
-            yield return StartCoroutine(npcPawn.ExecuteCommands(commands.ToArray()));
+            // 使用卡牌序列执行
+            List<CardData> npcCards = currentLevel.npcCardSequence;
+            yield return StartCoroutine(npcPawn.ExecuteCards(npcCards));
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -287,10 +288,10 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
 
             // 再次播放
-            if (npcPawn != null && CurrentPhase == GamePhase.Watching)
+            if (npcPawn != null && CurrentPhase == GamePhase.Watching && currentLevel != null)
             {
-                List<MoveCommand> commands = currentLevel.GetNPCCommands();
-                yield return StartCoroutine(npcPawn.ExecuteCommands(commands.ToArray()));
+                List<CardData> npcCards = currentLevel.npcCardSequence;
+                yield return StartCoroutine(npcPawn.ExecuteCards(npcCards));
             }
         }
     }
@@ -384,28 +385,31 @@ public class GameManager : MonoBehaviour
         // 重置玩家位置
         playerPawn.SetPosition(currentLevel.playerStartPosition);
 
+        // 获取玩家卡牌序列
+        List<CardData> playerCards = SlotManager.Instance?.GetSlotCards() ?? new List<CardData>();
+
         // 先执行棋盘归位动画，完成后再执行玩家移动
         TransitionBoardTo(boardCenterPosition, 1f, () =>
         {
-            // 棋盘动画完成后，开始执行玩家移动
-            StartCoroutine(ExecutePlayerMoveCoroutine(commands));
+            // 棋盘动画完成后，开始执行玩家卡牌
+            StartCoroutine(ExecutePlayerCardsCoroutine(playerCards));
         });
     }
 
     /// <summary>
-    /// 执行玩家移动动画
+    /// 执行玩家卡牌动画
     /// </summary>
-    private IEnumerator ExecutePlayerMoveCoroutine(List<MoveCommand> commands)
+    private IEnumerator ExecutePlayerCardsCoroutine(List<CardData> cards)
     {
-        Debug.Log("开始执行玩家移动...");
+        Debug.Log($"开始执行玩家卡牌，共 {cards.Count} 张...");
 
         // 短暂等待
         yield return new WaitForSeconds(0.3f);
 
         if (playerPawn != null)
         {
-            yield return StartCoroutine(playerPawn.ExecuteCommands(commands.ToArray()));
-            Debug.Log("玩家移动完成！");
+            yield return StartCoroutine(playerPawn.ExecuteCards(cards));
+            Debug.Log("玩家执行完成！");
         }
 
         yield return new WaitForSeconds(0.5f);
