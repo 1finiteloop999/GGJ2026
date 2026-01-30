@@ -58,7 +58,7 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
         if (costText != null)
         {
-            costText.text = data.cost.ToString();
+            costText.text = data.valuePoints.ToString();
         }
 
         if (cardImage != null)

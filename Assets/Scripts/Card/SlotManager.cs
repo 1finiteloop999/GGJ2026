@@ -52,7 +52,7 @@ public class SlotManager : MonoBehaviour
             // 如果还是没有，尝试从整个场景查找
             if (slots.Count == 0)
             {
-                slots = FindObjectsOfType<CardSlot>(true).ToList();
+                slots = Object.FindObjectsByType<CardSlot>(FindObjectsSortMode.None).ToList();
             }
         }
 

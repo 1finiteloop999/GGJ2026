@@ -58,6 +58,17 @@ public class GameManager : MonoBehaviour
     // 玩家起始位置
     public Vector2Int PlayerStartPosition => currentLevel?.playerStartPosition ?? Vector2Int.zero;
 
+    // 最近一次的分数结果
+    public CompareResult LastScoreResult { get; private set; }
+
+    /// <summary>
+    /// 获取当前关卡数据
+    /// </summary>
+    public LevelData GetCurrentLevel()
+    {
+        return currentLevel;
+    }
+
     // 事件
     public System.Action<GamePhase> OnPhaseChanged;
 
@@ -84,7 +95,7 @@ public class GameManager : MonoBehaviour
         // 如果没有设置boardContainer，尝试查找GridBoard
         if (boardContainer == null)
         {
-            GridBoard gridBoard = FindObjectOfType<GridBoard>();
+            GridBoard gridBoard = Object.FindFirstObjectByType<GridBoard>();
             if (gridBoard != null)
             {
                 boardContainer = gridBoard.transform;
@@ -415,8 +426,113 @@ public class GameManager : MonoBehaviour
         SetUIActive(planningUI, false);
         SetUIActive(resultUI, true);
 
-        // TODO: 计算模仿度
-        Debug.Log("关卡完成！");
+        // 计算分数
+        CalculateAndShowScore();
+    }
+
+    /// <summary>
+    /// 计算并显示分数
+    /// </summary>
+    private void CalculateAndShowScore()
+    {
+        if (currentLevel == null)
+        {
+            Debug.LogError("没有关卡数据!");
+            return;
+        }
+
+        // 获取NPC卡牌序列
+        List<CardData> npcCards = currentLevel.npcCardSequence;
+
+        // 获取玩家卡牌序列
+        List<CardData> playerCards = SlotManager.Instance?.GetSlotCards() ?? new List<CardData>();
+
+        // 计算分数
+        CompareResult result;
+        if (ScoreCalculator.Instance != null)
+        {
+            result = ScoreCalculator.Instance.CalculateScore(npcCards, playerCards, currentLevel);
+        }
+        else
+        {
+            // 手动计算（备用）
+            result = CalculateScoreManually(npcCards, playerCards);
+        }
+
+        LastScoreResult = result;
+
+        // 通知UI更新
+        if (ResultUI.Instance != null)
+        {
+            ResultUI.Instance.ShowResult(result, currentLevel);
+        }
+
+        Debug.Log($"关卡完成！得分: {result.totalScore}/{result.maxScore}, 评级: {result.rank}, 通关: {result.isPassed}");
+    }
+
+    /// <summary>
+    /// 手动计算分数（备用方法）
+    /// </summary>
+    private CompareResult CalculateScoreManually(List<CardData> npcCards, List<CardData> playerCards)
+    {
+        CompareResult result = new CompareResult();
+
+        int maxSteps = Mathf.Max(npcCards.Count, playerCards.Count);
+        result.totalSteps = npcCards.Count;
+
+        // 计算满分
+        foreach (var card in npcCards)
+        {
+            if (card != null)
+            {
+                result.maxScore += card.valuePoints;
+            }
+        }
+
+        // 逐步对比
+        for (int i = 0; i < maxSteps; i++)
+        {
+            CardData npcCard = i < npcCards.Count ? npcCards[i] : null;
+            CardData playerCard = i < playerCards.Count ? playerCards[i] : null;
+
+            StepCompareResult stepResult = new StepCompareResult(i, npcCard, playerCard);
+            result.stepResults.Add(stepResult);
+
+            if (stepResult.isCorrect)
+            {
+                result.totalScore += stepResult.scoreGained;
+                result.correctCount++;
+            }
+        }
+
+        // 获取评级
+        if (currentLevel != null)
+        {
+            result.rank = currentLevel.GetRank(result.totalScore);
+            result.isPassed = currentLevel.IsPassed(result.totalScore);
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region 公开方法（供其他脚本调用）
+
+    /// <summary>
+    /// 获取当前关卡的NPC指令
+    /// </summary>
+    public List<MoveCommand> GetCurrentLevelNPCCommands()
+    {
+        return currentLevel?.GetNPCCommands() ?? new List<MoveCommand>();
+    }
+
+    /// <summary>
+    /// 获取当前关卡数据
+    /// </summary>
+    public LevelData GetCurrentLevelData()
+    {
+        return currentLevel;
     }
 
     #endregion
