@@ -10,13 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89d365f66426d4f45ae2f36e07b69603, type: 3}
-  m_Name: CardData 3
+  m_Name: "3\u6B65"
   m_EditorClassIdentifier: 
-  cardName: RIGHT
+  cardName: 3
   cardType: 0
   cardSprite: {fileID: 0}
-  direction: 3
-  stepCount: 0
-  cost: 1
+  direction: 0
+  stepCount: 3
+  actionName: 
+  expressionName: 
+  valuePoints: 3
+  buyCost: 3
   sellValue: 1
-  cardColor: {r: 1, g: 0, b: 0, a: 1}
+  cardColor: {r: 0.19496846, g: 0.19496846, b: 0.19496846, a: 1}
