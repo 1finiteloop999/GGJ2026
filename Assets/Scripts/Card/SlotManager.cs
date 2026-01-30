@@ -87,21 +87,47 @@ public class SlotManager : MonoBehaviour
         InitializeSlots();
     }
 
+    [Header("NPC路径预览")]
+    [SerializeField] private LineRenderer npcPathPreview;
+    [SerializeField] private Color npcPreviewColor = new Color(1f, 0.5f, 0.5f, 0.6f); // 红色半透明
+
     /// <summary>
     /// 设置路径预览LineRenderer
     /// </summary>
     private void SetupPathPreview()
     {
-        if (pathPreview == null)
+        Transform parent = null;
+        if (GridBoard.Instance != null)
         {
-            // 尝试将PathPreview创建为GridBoard的子物体
-            Transform parent = null;
-            if (GridBoard.Instance != null)
+            parent = GridBoard.Instance.transform;
+        }
+
+        // 创建NPC路径预览（在下层）
+        if (npcPathPreview == null)
+        {
+            GameObject npcPreviewObj = new GameObject("NPCPathPreview");
+            if (parent != null)
             {
-                parent = GridBoard.Instance.transform;
+                npcPreviewObj.transform.SetParent(parent);
+                npcPreviewObj.transform.localPosition = Vector3.zero;
+                npcPreviewObj.transform.localScale = Vector3.one;
             }
 
-            GameObject previewObj = new GameObject("PathPreview");
+            npcPathPreview = npcPreviewObj.AddComponent<LineRenderer>();
+            npcPathPreview.startWidth = 0.15f;
+            npcPathPreview.endWidth = 0.15f;
+            npcPathPreview.material = new Material(Shader.Find("Sprites/Default"));
+            npcPathPreview.startColor = npcPreviewColor;
+            npcPathPreview.endColor = npcPreviewColor;
+            npcPathPreview.sortingOrder = 4; // NPC路径在下层
+            npcPathPreview.positionCount = 0;
+            npcPathPreview.useWorldSpace = false;
+        }
+
+        // 创建玩家路径预览（在上层）
+        if (pathPreview == null)
+        {
+            GameObject previewObj = new GameObject("PlayerPathPreview");
             if (parent != null)
             {
                 previewObj.transform.SetParent(parent);
@@ -117,11 +143,119 @@ public class SlotManager : MonoBehaviour
         pathPreview.material = new Material(Shader.Find("Sprites/Default"));
         pathPreview.startColor = previewColor;
         pathPreview.endColor = previewColor;
-        pathPreview.sortingOrder = 5;
+        pathPreview.sortingOrder = 5; // 玩家路径在上层
         pathPreview.positionCount = 0;
 
         // 使用本地坐标，这样会随父物体一起移动和缩放
         pathPreview.useWorldSpace = false;
+    }
+
+    /// <summary>
+    /// 显示NPC路径预览
+    /// </summary>
+    public void ShowNPCPathPreview()
+    {
+        if (npcPathPreview == null || GridBoard.Instance == null) return;
+
+        LevelData levelData = GameManager.Instance?.GetCurrentLevel();
+        if (levelData == null) return;
+
+        // 生成NPC移动指令
+        List<MoveCommand> commands = levelData.GetNPCCommands();
+
+        if (commands.Count == 0)
+        {
+            npcPathPreview.positionCount = 0;
+            return;
+        }
+
+        // 获取NPC起始位置
+        Vector2Int currentPos = levelData.npcStartPosition;
+
+        List<Vector3> positions = new List<Vector3>();
+        positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+
+        foreach (var cmd in commands)
+        {
+            Vector2Int dir = cmd.direction switch
+            {
+                Direction.Up => Vector2Int.up,
+                Direction.Down => Vector2Int.down,
+                Direction.Left => Vector2Int.left,
+                Direction.Right => Vector2Int.right,
+                _ => Vector2Int.zero
+            };
+
+            for (int i = 0; i < cmd.steps; i++)
+            {
+                Vector2Int nextPos = currentPos + dir;
+
+                if (GridBoard.Instance.IsValidPosition(nextPos))
+                {
+                    currentPos = nextPos;
+                    positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        npcPathPreview.positionCount = positions.Count;
+        npcPathPreview.SetPositions(positions.ToArray());
+
+        Debug.Log($"[SlotManager] 显示NPC路径预览，共 {positions.Count} 个点");
+    }
+
+    /// <summary>
+    /// 隐藏NPC路径预览
+    /// </summary>
+    public void HideNPCPathPreview()
+    {
+        if (npcPathPreview != null)
+        {
+            npcPathPreview.positionCount = 0;
+        }
+    }
+
+    /// <summary>
+    /// 获取NPC路径终点位置
+    /// </summary>
+    public Vector2Int GetNPCEndPosition()
+    {
+        LevelData levelData = GameManager.Instance?.GetCurrentLevel();
+        if (levelData == null) return Vector2Int.zero;
+
+        Vector2Int currentPos = levelData.npcStartPosition;
+        List<MoveCommand> commands = levelData.GetNPCCommands();
+
+        foreach (var cmd in commands)
+        {
+            Vector2Int dir = cmd.direction switch
+            {
+                Direction.Up => Vector2Int.up,
+                Direction.Down => Vector2Int.down,
+                Direction.Left => Vector2Int.left,
+                Direction.Right => Vector2Int.right,
+                _ => Vector2Int.zero
+            };
+
+            for (int i = 0; i < cmd.steps; i++)
+            {
+                Vector2Int nextPos = currentPos + dir;
+                if (GridBoard.Instance != null && GridBoard.Instance.IsValidPosition(nextPos))
+                {
+                    currentPos = nextPos;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        return currentPos;
     }
 
     /// <summary>
@@ -309,10 +443,11 @@ public class SlotManager : MonoBehaviour
         }
 
         HidePathPreview();
+        HideNPCPathPreview();
     }
 
     /// <summary>
-    /// 隐藏路径预览
+    /// 隐藏玩家路径预览
     /// </summary>
     public void HidePathPreview()
     {
@@ -320,6 +455,15 @@ public class SlotManager : MonoBehaviour
         {
             pathPreview.positionCount = 0;
         }
+    }
+
+    /// <summary>
+    /// 隐藏所有路径预览（玩家和NPC）
+    /// </summary>
+    public void HideAllPathPreviews()
+    {
+        HidePathPreview();
+        HideNPCPathPreview();
     }
 
     /// <summary>

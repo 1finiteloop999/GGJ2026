@@ -311,20 +311,25 @@ public class GameManager : MonoBehaviour
         // 棋盘左移并缩小
         TransitionBoardTo(boardPlanningPosition, boardPlanningScale);
 
-        // 重置玩家位置
+        // 重置玩家位置到起点
         if (playerPawn != null)
         {
             playerPawn.SetPosition(currentLevel.playerStartPosition);
         }
 
-        // 重置NPC位置（停在起点）
-        if (npcPawn != null)
+        // NPC停在路径终点
+        if (npcPawn != null && SlotManager.Instance != null)
         {
-            npcPawn.SetPosition(currentLevel.npcStartPosition);
+            Vector2Int npcEndPos = SlotManager.Instance.GetNPCEndPosition();
+            npcPawn.SetPosition(npcEndPos);
+            Debug.Log($"NPC停在终点: {npcEndPos}");
         }
 
-        // 清空卡槽（这会返还所有点数）
+        // 清空卡槽（这会返还所有点数，但不清除NPC路径预览）
         SlotManager.Instance?.ClearAllSlots();
+
+        // 显示NPC路径预览
+        SlotManager.Instance?.ShowNPCPathPreview();
 
         // 重新初始化点数
         DeckManager.Instance?.SetPoints(currentLevel.startingPoints);
@@ -345,8 +350,8 @@ public class GameManager : MonoBehaviour
         SetUIActive(planningUI, false);
         SetUIActive(resultUI, false);
 
-        // 隐藏路径预览
-        SlotManager.Instance?.HidePathPreview();
+        // 隐藏所有路径预览（玩家和NPC）
+        SlotManager.Instance?.HideAllPathPreviews();
 
         // 检查SlotManager
         if (SlotManager.Instance == null)

@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteLeft: {fileID: 0}
   spriteRight: {fileID: 0}
   spriteBow: {fileID: 0}
-  spriteJump: {fileID: 0}
+  spriteJump: {fileID: 2663895344694380340, guid: 5c049a930a686b7408faee71c136f4d0, type: 3}
   spriteSitDown: {fileID: 0}
   spriteWave: {fileID: 0}
   spriteLaugh: {fileID: 0}
