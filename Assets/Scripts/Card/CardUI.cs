@@ -1,345 +1,170 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using DG.Tweening;
+using TMPro;
 
 /// <summary>
-/// 卡牌UI组件
-/// 悬停时：上移 + Q弹放大
-/// 移开时：恢复原位 + 恢复原大小
+/// 卡牌UI - 负责卡牌的显示和拖拽
 /// </summary>
-[RequireComponent(typeof(CanvasGroup))]
-public class CardUI : MonoBehaviour,
-    IPointerEnterHandler,
-    IPointerExitHandler,
-    IPointerClickHandler,
-    IBeginDragHandler,
-    IDragHandler,
-    IEndDragHandler
+public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("组件引用")]
-    [SerializeField] private Image cardImage;           // 卡牌图片
-    [SerializeField] private Image cardFrame;           // 卡牌边框
-
-    [Header("悬停设置")]
-    [SerializeField] private float hoverScale = 1.15f;   // 悬停放大倍数
-    [SerializeField] private float hoverYOffset = 30f;   // 悬停时向上偏移
-    [SerializeField] private float hoverDuration = 0.2f; // 动画时长
+    [Header("UI引用")]
+    [SerializeField] private Image cardImage;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI costText;
 
     [Header("拖拽设置")]
-    [SerializeField] private float dragAlpha = 0.8f;
+    [SerializeField] private float dragScale = 1.1f;
 
-    // 私有变量
-    private CardData cardData;
-    private CardContainer currentContainer;
+    // 卡牌数据
+    public CardData CardData { get; private set; }
+
+    // 原始位置和父物体
+    private Vector3 originalPosition;
+    private Transform originalParent;
+    private int originalSiblingIndex;
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
 
-    // 状态
-    private bool isHovering = false;
-    private bool isDragging = false;
-    private int baseSortOrder = 0;
+    // 当前所在的卡槽（如果有）
+    public CardSlot CurrentSlot { get; set; }
 
-    // ★ 原始缩放（固定为1）
-    private readonly Vector3 originalScale = Vector3.one;
-
-    // ★ 排列位置（由Container设置）
-    private Vector3 arrangedPosition = Vector3.zero;
-
-    // 拖拽相关
-    private Transform dragParent;
-    private Vector2 dragOffset;
-
-    // 事件
-    public System.Action<CardUI> OnCardClicked;
-    public System.Action<CardUI> OnDragStarted;
-    public System.Action<CardUI> OnDragEnded;
-
-    #region 属性
-
-    public CardData GetCardData() => cardData;
-    public CardContainer GetContainer() => currentContainer;
-    public bool IsDragging => isDragging;
-    public bool IsHovering => isHovering;
-
-    #endregion
-
-    #region 初始化
+    // 是否在牌库中
+    public bool IsInDeck => CurrentSlot == null;
 
     private void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
 
-        if (cardImage == null)
-            cardImage = transform.Find("CardImage")?.GetComponent<Image>();
-        if (cardFrame == null)
-            cardFrame = GetComponent<Image>();
-
-        // 确保初始缩放为1
-        transform.localScale = Vector3.one;
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
     }
 
     /// <summary>
-    /// 初始化卡牌数据
+    /// 初始化卡牌
     /// </summary>
-    public void Initialize(CardData data)
+    public void Setup(CardData data)
     {
-        cardData = data;
+        CardData = data;
 
-        // 设置颜色
+        if (nameText != null)
+        {
+            nameText.text = data.GetDescription();
+        }
+
+        if (costText != null)
+        {
+            costText.text = data.cost.ToString();
+        }
+
         if (cardImage != null)
         {
             cardImage.color = data.cardColor;
-            if (data.cardImage != null)
-                cardImage.sprite = data.cardImage;
         }
 
-        // 如果没有子Image，设置自身颜色
-        if (cardImage == null && cardFrame != null)
+        if (iconImage != null && data.cardSprite != null)
         {
-            cardFrame.color = data.cardColor;
+            iconImage.sprite = data.cardSprite;
         }
     }
 
-    #endregion
+    // 拖拽前是否在卡槽中
+    private CardSlot previousSlot;
 
-    #region Setter
-
-    public void SetContainer(CardContainer container)
-    {
-        currentContainer = container;
-    }
-
-    public void SetDragParent(Transform parent)
-    {
-        dragParent = parent;
-    }
-
-    public void SetBaseSortOrder(int order)
-    {
-        baseSortOrder = order;
-        transform.SetSiblingIndex(order);
-    }
-
-    /// <summary>
-    /// 设置排列位置
-    /// </summary>
-    public void SetArrangedPosition(Vector3 position)
-    {
-        arrangedPosition = position;
-    }
-
-    public Vector3 GetArrangedPosition() => arrangedPosition;
-
-    #endregion
-
-    #region 悬停交互
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (isDragging) return;
-
-        isHovering = true;
-
-        // 停止之前的动画
-        transform.DOKill();
-
-        // 移到最上层显示
-        transform.SetAsLastSibling();
-
-        // 计算悬停位置
-        Vector3 hoverPos = new Vector3(arrangedPosition.x, arrangedPosition.y + hoverYOffset, arrangedPosition.z);
-
-        // ★ 同时执行：上移 + Q弹放大
-        transform.DOLocalMove(hoverPos, hoverDuration).SetEase(Ease.OutQuad);
-        transform.DOScale(originalScale * hoverScale, hoverDuration).SetEase(Ease.OutBack);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (isDragging) return;
-
-        isHovering = false;
-
-        // 停止之前的动画
-        transform.DOKill();
-
-        // 恢复层级
-        transform.SetSiblingIndex(baseSortOrder);
-
-        // ★ 同时执行：回到原位 + 恢复原大小
-        transform.DOLocalMove(arrangedPosition, hoverDuration).SetEase(Ease.OutQuad);
-        transform.DOScale(originalScale, hoverDuration).SetEase(Ease.OutQuad);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (isDragging) return;
-
-        // 重置状态
-        isHovering = false;
-        transform.DOKill();
-
-        // ★ 立即恢复：位置 + 大小 + 层级
-        transform.SetSiblingIndex(baseSortOrder);
-        transform.localPosition = arrangedPosition;
-        transform.localScale = originalScale;
-
-        // 触发点击事件
-        OnCardClicked?.Invoke(this);
-    }
-
-    #endregion
-
-    #region 拖拽交互
+    #region 拖拽事件
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        isDragging = true;
-        isHovering = false;
+        // 记录原始状态
+        originalPosition = transform.position;
+        originalParent = transform.parent;
+        originalSiblingIndex = transform.GetSiblingIndex();
 
-        transform.DOKill();
+        // 记录之前所在的卡槽
+        previousSlot = CurrentSlot;
 
-        // ★ 恢复原大小
-        transform.localScale = originalScale;
-
-        // 移到拖拽层
-        if (dragParent != null)
+        // 如果从卡槽中拖出，先清除卡槽状态
+        if (CurrentSlot != null)
         {
-            transform.SetParent(dragParent);
+            CurrentSlot.RemoveCard();
         }
 
-        // 移到最上层
+        // 设置拖拽状态
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.alpha = 0.8f;
+        transform.localScale = Vector3.one * dragScale;
+
+        // 移动到Canvas最上层确保可见
+        transform.SetParent(transform.root);
         transform.SetAsLastSibling();
 
-        // 计算拖拽偏移
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            transform.parent as RectTransform,
-            eventData.position,
-            eventData.pressEventCamera,
-            out Vector2 localPoint
-        );
-        dragOffset = (Vector2)transform.localPosition - localPoint;
-
-        // 半透明效果
-        canvasGroup.DOFade(dragAlpha, 0.1f);
-
-        // 从容器移除
-        if (currentContainer != null)
-        {
-            currentContainer.RemoveCard(this, true);
-        }
-
-        OnDragStarted?.Invoke(this);
+        // 通知DeckManager
+        DeckManager.Instance?.OnCardBeginDrag(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!isDragging) return;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            transform.parent as RectTransform,
-            eventData.position,
-            eventData.pressEventCamera,
-            out Vector2 localPoint
-        );
-
-        transform.localPosition = localPoint + dragOffset;
+        // 跟随鼠标
+        transform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        isDragging = false;
+        // 恢复状态
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1f;
+        transform.localScale = Vector3.one;
 
-        transform.DOKill();
-        canvasGroup.DOFade(1f, 0.1f);
+        // 检查是否放在有效位置，由DeckManager处理
+        bool handled = DeckManager.Instance?.OnCardEndDrag(this, eventData, previousSlot) ?? false;
 
-        // ★ 确保大小恢复
-        transform.localScale = originalScale;
-
-        // 检测放置位置
-        CardContainer targetContainer = GetContainerUnderPointer(eventData);
-
-        if (targetContainer != null)
+        if (!handled)
         {
-            int insertIndex = targetContainer.GetInsertIndex(transform.position);
-            targetContainer.InsertCard(this, insertIndex, true);
-        }
-        else if (currentContainer != null)
-        {
-            currentContainer.AddCard(this, true);
+            // 没有放到有效位置，尝试返回牌库
+            DeckManager.Instance?.TryReturnCardToHand(this);
         }
 
-        OnDragEnded?.Invoke(this);
-    }
-
-    private CardContainer GetContainerUnderPointer(PointerEventData eventData)
-    {
-        var results = new System.Collections.Generic.List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-
-        foreach (var result in results)
-        {
-            CardContainer container = result.gameObject.GetComponent<CardContainer>();
-            if (container == null)
-                container = result.gameObject.GetComponentInParent<CardContainer>();
-
-            if (container != null)
-                return container;
-        }
-
-        return null;
+        // 清除记录
+        previousSlot = null;
     }
 
     #endregion
 
-    #region 动画方法
+    #region 悬停效果
 
-    public void PlayUseAnimation(Vector3 targetWorldPos, System.Action onComplete = null)
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        transform.DOKill();
-        transform.SetAsLastSibling();
-
-        Sequence seq = DOTween.Sequence();
-        seq.Append(transform.DOScale(1.2f, 0.15f).SetEase(Ease.OutQuad));
-        seq.Append(transform.DOMove(targetWorldPos, 0.4f).SetEase(Ease.InQuad));
-        seq.Join(transform.DOScale(0f, 0.3f).SetDelay(0.2f));
-        seq.Join(canvasGroup.DOFade(0f, 0.3f).SetDelay(0.2f));
-
-        seq.OnComplete(() =>
-        {
-            onComplete?.Invoke();
-            Destroy(gameObject);
-        });
+        transform.localScale = Vector3.one * 1.05f;
     }
 
-    public void Shake()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        transform.DOKill();
-        transform.DOShakePosition(0.3f, new Vector3(15f, 0, 0), 20, 90, false, true)
-            .OnComplete(() => transform.localPosition = arrangedPosition);
+        transform.localScale = Vector3.one;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 返回原始位置
+    /// </summary>
+    public void ReturnToOriginalPosition()
+    {
+        transform.SetParent(originalParent);
+        transform.SetSiblingIndex(originalSiblingIndex);
+        transform.position = originalPosition;
     }
 
     /// <summary>
-    /// 强制重置状态（用于异常情况）
+    /// 移动到指定父物体
     /// </summary>
-    public void ForceReset()
+    public void SetParentAndReset(Transform newParent)
     {
-        transform.DOKill();
-        isHovering = false;
-        isDragging = false;
-        transform.localScale = originalScale;
-        transform.localPosition = arrangedPosition;
-        transform.SetSiblingIndex(baseSortOrder);
-        canvasGroup.alpha = 1f;
-    }
-
-    #endregion
-
-    private void OnDestroy()
-    {
-        transform.DOKill();
-        canvasGroup?.DOKill();
+        transform.SetParent(newParent);
+        transform.localPosition = Vector3.zero;
+        transform.localScale = Vector3.one;
     }
 }

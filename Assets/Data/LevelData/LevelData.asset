@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0525aa14c55cdf14f9b74674911e21ae, type: 3}
+  m_Name: LevelData
+  m_EditorClassIdentifier: 
+  levelName: "\u7B2C\u4E00\u5173"
+  levelIndex: 0
+  startingPoints: 3
+  playerStartPosition: {x: 3, y: 0}
+  npcStartPosition: {x: 3, y: 0}
+  npcPath:
+  - direction: 0
+    steps: 2
+  - direction: 2
+    steps: 1
+  requiredMimicryPercent: 70
+  initialCards:
+  - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
+  - {fileID: 11400000, guid: 4ca3752d12a255d4fb67cbcdde81e4c0, type: 2}
+  - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}
+  - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
+  - {fileID: 11400000, guid: 7f51d9c71249f8447b1a297da23df8e5, type: 2}
+  slotCount: 6

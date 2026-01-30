@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89d365f66426d4f45ae2f36e07b69603, type: 3}
+  m_Name: CardData 1
+  m_EditorClassIdentifier: 
+  cardName: DOWN
+  cardType: 0
+  cardSprite: {fileID: 0}
+  direction: 1
+  stepCount: 0
+  cost: 1
+  sellValue: 1
+  cardColor: {r: 0.45676422, g: 0, b: 1, a: 1}
