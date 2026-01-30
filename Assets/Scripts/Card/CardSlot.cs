@@ -42,19 +42,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
             return false;
         }
 
-        // 检查点数是否足够
-        if (DeckManager.Instance != null && DeckManager.Instance.CurrentPoints < 1)
-        {
-            Debug.Log("点数不足，无法放入卡槽！");
-            return false;
-        }
-
         CurrentCard = card;
         card.CurrentSlot = this;
         card.SetParentAndReset(transform);
-
-        // 扣除点数
-        DeckManager.Instance?.ModifyPoints(-1);
 
         UpdateVisual();
 
@@ -82,9 +72,6 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         {
             card.CurrentSlot = null;
         }
-
-        // 返还点数
-        DeckManager.Instance?.ModifyPoints(1);
 
         UpdateVisual();
 

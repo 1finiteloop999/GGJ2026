@@ -221,15 +221,16 @@ public class DeckManager : MonoBehaviour
     /// </summary>
     private void SellCard(CardUI card)
     {
-        // 如果卡牌在卡槽中，先移除（会自动返还点数）
+        // 如果卡牌在卡槽中，先移除
         if (card.CurrentSlot != null)
         {
             card.CurrentSlot.RemoveCard();
         }
 
-        // 出售获得点数
-        ModifyPoints(1);
-        Debug.Log($"出售卡牌: {card.CardData?.cardName ?? "未知"}, 获得 1 点数");
+        // 出售获得点数（使用CardData中的sellValue）
+        int sellValue = card.CardData != null ? card.CardData.sellValue : 1;
+        ModifyPoints(sellValue);
+        Debug.Log($"出售卡牌: {card.CardData?.cardName ?? "未知"}, 获得 {sellValue} 点数");
 
         handCards.Remove(card);
         Destroy(card.gameObject);
@@ -244,7 +245,7 @@ public class DeckManager : MonoBehaviour
     {
         Debug.Log($"使用卡牌: {card.CardData?.cardName ?? "未知"}");
 
-        // 如果卡牌在卡槽中，先移除（会自动返还点数）
+        // 如果卡牌在卡槽中，先移除
         if (card.CurrentSlot != null)
         {
             card.CurrentSlot.RemoveCard();
