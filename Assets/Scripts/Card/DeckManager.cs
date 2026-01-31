@@ -177,9 +177,18 @@ public class DeckManager : MonoBehaviour
     {
         draggingCard = null;
 
+        CardData cardData = card.CardData;
+
         // 检查是否拖到了出售区域
         if (sellArea != null && RectTransformUtility.RectangleContainsScreenPoint(sellArea, eventData.position))
         {
+            // 法术牌不能出售（不获得点数）
+            if (cardData != null && cardData.IsSpellCard)
+            {
+                Debug.Log("[DeckManager] 法术牌不能出售");
+                return false;
+            }
+
             SellCard(card);
             return true;
         }
@@ -187,8 +196,17 @@ public class DeckManager : MonoBehaviour
         // 检查是否拖到了使用区域
         if (useArea != null && RectTransformUtility.RectangleContainsScreenPoint(useArea, eventData.position))
         {
-            UseCard(card);
-            return true;
+            // 只有法术牌可以拖入USE区域
+            if (cardData != null && cardData.IsSpellCard)
+            {
+                UseCard(card);
+                return true;
+            }
+            else
+            {
+                Debug.Log("[DeckManager] 只有法术牌可以拖入USE区域");
+                return false;
+            }
         }
 
         // 检查卡牌是否已经被放入卡槽（由CardSlot的OnDrop处理）
@@ -298,6 +316,13 @@ public class DeckManager : MonoBehaviour
             card.CurrentSlot.RemoveCard();
         }
 
+        // 法术牌不能出售（不获得点数）
+        if (card.CardData != null && card.CardData.IsSpellCard)
+        {
+            Debug.Log($"[DeckManager] 法术牌不能出售: {card.CardData.cardName}");
+            return;
+        }
+
         // 出售获得点数（使用CardData中的sellValue）
         int sellValue = card.CardData != null ? card.CardData.sellValue : 1;
         ModifyPoints(sellValue);
@@ -310,11 +335,11 @@ public class DeckManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 使用卡牌（触发法术效果，不消耗点数）
+    /// 使用卡牌（法术牌专用）
     /// </summary>
     private void UseCard(CardUI card)
     {
-        Debug.Log($"使用卡牌: {card.CardData?.cardName ?? "未知"}");
+        Debug.Log($"使用法术牌: {card.CardData?.cardName ?? "未知"}");
 
         // 如果卡牌在卡槽中，先移除
         if (card.CurrentSlot != null)
@@ -322,26 +347,16 @@ public class DeckManager : MonoBehaviour
             card.CurrentSlot.RemoveCard();
         }
 
-        // TODO: 执行卡牌特殊效果
-        // 例如：抽牌、打乱牌库、查看牌库等
-        ExecuteCardEffect(card);
+        // 执行法术牌效果
+        if (card.CardData != null && card.CardData.IsSpellCard)
+        {
+            SpellManager.Instance?.UseSpellCard(card.CardData);
+        }
 
         handCards.Remove(card);
         Destroy(card.gameObject);
 
         OnCardUsed?.Invoke(card);
-    }
-
-    /// <summary>
-    /// 执行卡牌效果（法术牌专用）
-    /// </summary>
-    private void ExecuteCardEffect(CardUI card)
-    {
-        if (card.CardData == null) return;
-
-        // 根据卡牌数据执行不同效果
-        // 这里可以后续扩展
-        Debug.Log($"执行卡牌效果: {card.CardData.cardName}");
     }
 
     /// <summary>

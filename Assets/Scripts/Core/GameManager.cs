@@ -131,6 +131,9 @@ public class GameManager : MonoBehaviour
         // 初始化牌库商店
         DeckShop.Instance?.Initialize(level.deckCards, level.deckDisplayCount);
 
+        // 初始化法术管理器的随机卡池
+        SpellManager.Instance?.SetRandomCardPool(level.deckCards);
+
         // 初始化卡槽（使用场景中已有的卡槽）
         SlotManager.Instance?.Initialize();
 
@@ -625,5 +628,21 @@ public class GameManager : MonoBehaviour
         {
             uiObject.SetActive(active);
         }
+    }
+
+    /// <summary>
+    /// 获取NPC棋子
+    /// </summary>
+    public PawnController GetNPCPawn()
+    {
+        return npcPawn;
+    }
+
+    /// <summary>
+    /// 获取玩家棋子
+    /// </summary>
+    public PawnController GetPlayerPawn()
+    {
+        return playerPawn;
     }
 }
