@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 
 /// <summary>
 /// 卡牌UI - 负责卡牌的显示和拖拽
@@ -9,10 +8,8 @@ using TMPro;
 public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI引用")]
-    [SerializeField] private Image cardImage;
-    [SerializeField] private Image iconImage;
-    [SerializeField] private TextMeshProUGUI nameText;
-    [SerializeField] private TextMeshProUGUI costText;
+    [Tooltip("卡牌背景图片（显示整张卡牌美术）")]
+    [SerializeField] private Image cardBackground;
 
     [Header("拖拽设置")]
     [SerializeField] private float dragScale = 1.1f;
@@ -42,6 +39,12 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
+
+        // 自动获取背景图片
+        if (cardBackground == null)
+        {
+            cardBackground = GetComponent<Image>();
+        }
     }
 
     /// <summary>
@@ -51,24 +54,11 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
     {
         CardData = data;
 
-        if (nameText != null)
+        // 设置卡牌图片
+        if (cardBackground != null && data.cardSprite != null)
         {
-            nameText.text = data.GetDescription();
-        }
-
-        if (costText != null)
-        {
-            costText.text = data.valuePoints.ToString();
-        }
-
-        if (cardImage != null)
-        {
-            cardImage.color = data.cardColor;
-        }
-
-        if (iconImage != null && data.cardSprite != null)
-        {
-            iconImage.sprite = data.cardSprite;
+            cardBackground.sprite = data.cardSprite;
+            cardBackground.color = Color.white; // 确保颜色正常显示
         }
     }
 

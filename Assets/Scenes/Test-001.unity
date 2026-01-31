@@ -4778,9 +4778,9 @@ MonoBehaviour:
   tipText: {fileID: 706586377}
   cardPrefab: {fileID: 914349447506620382, guid: 596e6c3d485f3494ab1cb262edc023a0, type: 3}
   handContainer: {fileID: 1343388620}
-  handLayoutGroup: {fileID: 0}
+  handLayoutGroup: {fileID: 1343388621}
   animationDuration: 0.3
-  handShrinkAmount: 300
+  handShrinkAmount: 420
   displayCount: 3
   tipFadeDuration: 1
 --- !u!1 &2057429479
