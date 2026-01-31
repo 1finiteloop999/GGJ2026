@@ -54,6 +54,13 @@ public class LevelData : ScriptableObject
     [Tooltip("玩家初始获得的卡牌")]
     public List<CardData> initialCards = new List<CardData>();
 
+    [Header("牌库配置")]
+    [Tooltip("本关卡的牌库（30-40张卡牌）")]
+    public List<CardData> deckCards = new List<CardData>();
+
+    [Tooltip("每次展开牌库显示的卡牌数量")]
+    public int deckDisplayCount = 3;
+
     [Header("卡槽数量")]
     [Tooltip("本关卡可用的卡槽数量")]
     public int slotCount = 6;

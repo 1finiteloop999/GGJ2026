@@ -71,12 +71,6 @@ public class DeckManager : MonoBehaviour
     /// </summary>
     public bool AddCard(CardData cardData)
     {
-        if (handCards.Count >= maxHandSize)
-        {
-            Debug.Log("手牌已满!");
-            return false;
-        }
-
         if (cardPrefab == null || handContainer == null)
         {
             Debug.LogError("CardPrefab 或 HandContainer 未设置!");
@@ -121,6 +115,30 @@ public class DeckManager : MonoBehaviour
             }
         }
         handCards.Clear();
+    }
+
+    /// <summary>
+    /// 检查是否可以添加卡牌到手牌（无上限，始终返回true）
+    /// </summary>
+    public bool CanAddCard()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// 获取当前手牌数量
+    /// </summary>
+    public int GetHandCount()
+    {
+        return handCards.Count;
+    }
+
+    /// <summary>
+    /// 添加卡牌到手牌（从牌库购买时调用）
+    /// </summary>
+    public bool AddCardToHand(CardData cardData)
+    {
+        return AddCard(cardData);
     }
 
     /// <summary>
@@ -189,29 +207,82 @@ public class DeckManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 牌库卡牌拖拽结束（购买逻辑）
+    /// </summary>
+    public bool OnDeckCardEndDrag(CardUI card, PointerEventData eventData)
+    {
+        draggingCard = null;
+
+        if (card == null || card.CardData == null)
+        {
+            return false;
+        }
+
+        // 检查是否拖到了手牌区域
+        if (handContainer != null && RectTransformUtility.RectangleContainsScreenPoint(handContainer as RectTransform, eventData.position))
+        {
+            // 尝试购买到手牌
+            return DeckShop.Instance?.PurchaseCard(card) ?? false;
+        }
+
+        // 检查是否拖到了卡槽
+        if (card.CurrentSlot != null)
+        {
+            // 购买并直接放入卡槽
+            if (DeckShop.Instance != null)
+            {
+                // 检查点数
+                int cost = card.CardData.buyCost;
+                if (CurrentPoints < cost)
+                {
+                    // 点数不足，从卡槽移除
+                    card.CurrentSlot.RemoveCard();
+                    return false;
+                }
+
+                // 扣除点数
+                ModifyPoints(-cost);
+
+                // 从牌库移除
+                DeckShop.Instance.UseDisplayCard(card);
+
+                Debug.Log($"[DeckManager] 从牌库购买卡牌直接放入卡槽: {card.CardData.cardName}");
+                return true;
+            }
+        }
+
+        // 检查是否拖到了使用区域
+        if (useArea != null && RectTransformUtility.RectangleContainsScreenPoint(useArea, eventData.position))
+        {
+            // 直接使用牌库卡牌
+            if (DeckShop.Instance != null)
+            {
+                DeckShop.Instance.UseDisplayCard(card);
+                // TODO: 执行卡牌效果
+                Debug.Log($"[DeckManager] 直接使用牌库卡牌: {card.CardData.cardName}");
+                Destroy(card.gameObject);
+                return true;
+            }
+        }
+
+        // 没有放到有效位置
+        return false;
+    }
+
+    /// <summary>
     /// 尝试将卡牌返回手牌
     /// </summary>
     public void TryReturnCardToHand(CardUI card)
     {
         if (card == null) return;
 
-        // 检查手牌是否已满
-        if (handCards.Count >= maxHandSize)
+        // 返回手牌（无上限）
+        card.SetParentAndReset(handContainer);
+        if (!handCards.Contains(card))
         {
-            // 手牌已满，自动出售
-            Debug.Log("手牌已满，自动出售卡牌");
-            SellCard(card);
+            handCards.Add(card);
         }
-        else
-        {
-            // 返回手牌
-            card.SetParentAndReset(handContainer);
-            if (!handCards.Contains(card))
-            {
-                handCards.Add(card);
-            }
-            Debug.Log("卡牌返回手牌");
-        }
+        Debug.Log("卡牌返回手牌");
     }
 
     #endregion
@@ -288,14 +359,6 @@ public class DeckManager : MonoBehaviour
             card.SetParentAndReset(handContainer);
             handCards.Add(card);
         }
-    }
-
-    /// <summary>
-    /// 获取当前手牌数量
-    /// </summary>
-    public int GetHandCount()
-    {
-        return handCards.Count;
     }
 
     /// <summary>

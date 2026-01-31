@@ -30,8 +30,8 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
     // 当前所在的卡槽（如果有）
     public CardSlot CurrentSlot { get; set; }
 
-    // 是否在牌库中
-    public bool IsInDeck => CurrentSlot == null;
+    // 是否来自牌库展示区
+    public bool IsFromDeckShop { get; set; } = false;
 
     private void Awake()
     {
@@ -93,6 +93,12 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
             CurrentSlot.RemoveCard();
         }
 
+        // 检查是否来自牌库展示区
+        if (DeckShop.Instance != null && DeckShop.Instance.IsFromDeckDisplay(this))
+        {
+            IsFromDeckShop = true;
+        }
+
         // 设置拖拽状态
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.8f;
@@ -119,13 +125,30 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         canvasGroup.alpha = 1f;
         transform.localScale = Vector3.one;
 
-        // 检查是否放在有效位置，由DeckManager处理
-        bool handled = DeckManager.Instance?.OnCardEndDrag(this, eventData, previousSlot) ?? false;
-
-        if (!handled)
+        // 如果是从牌库拖出的卡牌
+        if (IsFromDeckShop)
         {
-            // 没有放到有效位置，尝试返回牌库
-            DeckManager.Instance?.TryReturnCardToHand(this);
+            // 尝试购买（通过DeckManager处理）
+            bool handled = DeckManager.Instance?.OnDeckCardEndDrag(this, eventData) ?? false;
+
+            if (!handled)
+            {
+                // 购买失败，返回牌库展示区
+                ReturnToOriginalPosition();
+            }
+
+            IsFromDeckShop = false;
+        }
+        else
+        {
+            // 普通卡牌拖拽
+            bool handled = DeckManager.Instance?.OnCardEndDrag(this, eventData, previousSlot) ?? false;
+
+            if (!handled)
+            {
+                // 没有放到有效位置，尝试返回手牌
+                DeckManager.Instance?.TryReturnCardToHand(this);
+            }
         }
 
         // 清除记录

@@ -125,8 +125,11 @@ public class GameManager : MonoBehaviour
         // 初始化棋子
         InitializePawns();
 
-        // 初始化牌库
+        // 初始化手牌
         DeckManager.Instance?.Initialize(level.startingPoints, level.initialCards);
+
+        // 初始化牌库商店
+        DeckShop.Instance?.Initialize(level.deckCards, level.deckDisplayCount);
 
         // 重置棋盘位置
         SetBoardTransform(boardCenterPosition, 1f);
