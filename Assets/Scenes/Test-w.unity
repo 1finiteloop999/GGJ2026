@@ -443,7 +443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &194026697
 RectTransform:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 4695442468715859214, guid: b5ef6bd940c7f4bf49dc150cf410f6f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1537,7 +1537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c588f44b509a9394ca18dafbed26256e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevel: {fileID: 11400000, guid: df2015e8ad115ec4daf98df52c981afe, type: 2}
+  currentLevel: {fileID: 11400000, guid: 7fd3fdb32d9f64e8ba796dfa0cbfc305, type: 2}
   boardContainer: {fileID: 1680450495}
   boardCenterPosition: {x: 0, y: 0, z: 0}
   boardPlanningPosition: {x: -5, y: 0, z: 0}
@@ -2215,6 +2215,8 @@ MonoBehaviour:
   - {fileID: 776910099}
   pathPreview: {fileID: 0}
   previewColor: {r: 1, g: 1, b: 0, a: 0.8}
+  npcPathPreview: {fileID: 0}
+  npcPreviewColor: {r: 1, g: 0.5, b: 0.5, a: 0.6}
 --- !u!4 &1367345486
 Transform:
   m_ObjectHideFlags: 0
@@ -2643,15 +2645,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b285e34c40966f04bb201de848bcfad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnSprite: {fileID: 0}
-  useAnimator: 0
-  spriteUp: {fileID: 0}
-  spriteDown: {fileID: 0}
-  spriteLeft: {fileID: 0}
-  spriteRight: {fileID: 0}
+  visualData: {fileID: 0}
+  defaultSprite: {fileID: 0}
   pawnColor: {r: 0, g: 0.30584526, b: 1, a: 1}
   moveSpeed: 5
   scaleRatio: 0.8
+  actionDuration: 1
+  pauseDuration: 0.5
   gridPosition: {x: 0, y: 0}
 --- !u!4 &1583926846
 Transform:
@@ -3413,15 +3413,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b285e34c40966f04bb201de848bcfad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnSprite: {fileID: 0}
-  useAnimator: 0
-  spriteUp: {fileID: 0}
-  spriteDown: {fileID: 0}
-  spriteLeft: {fileID: 0}
-  spriteRight: {fileID: 0}
+  visualData: {fileID: 0}
+  defaultSprite: {fileID: 0}
   pawnColor: {r: 1, g: 0, b: 0, a: 1}
   moveSpeed: 5
   scaleRatio: 0.8
+  actionDuration: 1
+  pauseDuration: 0.5
   gridPosition: {x: 0, y: 0}
 --- !u!4 &2030142530
 Transform:

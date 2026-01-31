@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u7B11"
   m_EditorClassIdentifier: 
   cardName: Laugh
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: 3329039666740383113, guid: c1a93db65d0e8429e85a422c773ac487, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
   direction: 0
   stepCount: 0
