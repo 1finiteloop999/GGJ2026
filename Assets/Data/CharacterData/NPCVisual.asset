@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ea86211c06c85d4fad17cb585ca57d2, type: 3}
   m_Name: NPCVisual
   m_EditorClassIdentifier: 
-  spriteIdle: {fileID: -5215294921018556061, guid: f04c9407c2d144e81ab8ff7e08a7d794, type: 3}
+  spriteIdle: {fileID: -4296760176796813495, guid: 044634441c6154e138740c3aa6d40e42, type: 3}
   spriteUp: {fileID: 6629812147117271838, guid: b0bc6f1caef264d67989fcea1829b28d, type: 3}
   spriteDown: {fileID: 0}
   spriteLeft: {fileID: 0}

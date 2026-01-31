@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ea86211c06c85d4fad17cb585ca57d2, type: 3}
   m_Name: PlayerVisual
   m_EditorClassIdentifier: 
-  spriteIdle: {fileID: 0}
+  spriteIdle: {fileID: -4296760176796813495, guid: 4b26de678e09847298928920c323b6d5, type: 3}
   spriteUp: {fileID: 0}
   spriteDown: {fileID: 0}
   spriteLeft: {fileID: 0}

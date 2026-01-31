@@ -15,7 +15,7 @@ MonoBehaviour:
   levelName: Test_w001
   levelIndex: 0
   startingPoints: 10
-  playerStartPosition: {x: 3, y: 2}
+  playerStartPosition: {x: 4, y: 2}
   npcStartPosition: {x: 1, y: 1}
   npcCardSequence:
   - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
