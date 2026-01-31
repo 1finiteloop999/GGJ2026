@@ -21,6 +21,6 @@ MonoBehaviour:
   spriteJump: {fileID: 0}
   spriteSitDown: {fileID: -2256367077020889916, guid: 61656c7a288074e8c8fd3427c78b8245, type: 3}
   spriteWave: {fileID: 0}
-  spritePause: {fileID: 6068752714494607558, guid: 5989f072c91714b9da2b5ff64713a386, type: 3}
+  spritePause: {fileID: 21300000, guid: 5989f072c91714b9da2b5ff64713a386, type: 3}
   spriteLaugh: {fileID: 0}
   spriteAngry: {fileID: 0}

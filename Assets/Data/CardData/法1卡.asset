@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89d365f66426d4f45ae2f36e07b69603, type: 3}
-  m_Name: "\u6CD5\u672F\u724Ctest"
+  m_Name: "\u6CD51\u5361"
   m_EditorClassIdentifier: 
-  cardName: Bow
-  cardSprite: {fileID: -1929853956713890838, guid: 5ff8a7ef6b9cbdf4b9bbaf43f58edeaa, type: 3}
+  cardName: 1 card
+  cardSprite: {fileID: -4525265941147271366, guid: f3e273e76bdcc455bb41e6ca3865f7ce, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
-  isSpellCard: 1
+  isSpellCard: 0
   direction: 0
   stepCount: 0
   isPause: 0
   actionType: 0
   expressionType: 0
-  spellGainPoints: 4
-  spellReplayNPC: 0
-  spellAddCards: 0
-  valuePoints: 3
-  buyCost: 3
-  sellValue: 2
+  spellGainPoints: 0
+  spellReplayNPC: 1
+  spellAddCards: 1
+  valuePoints: 0
+  buyCost: 0
+  sellValue: 1
