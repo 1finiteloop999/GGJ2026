@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ea86211c06c85d4fad17cb585ca57d2, type: 3}
   m_Name: NPCVisual
   m_EditorClassIdentifier: 
-  spriteIdle: {fileID: 0}
-  spriteUp: {fileID: 0}
+  spriteIdle: {fileID: -5215294921018556061, guid: f04c9407c2d144e81ab8ff7e08a7d794, type: 3}
+  spriteUp: {fileID: 6629812147117271838, guid: b0bc6f1caef264d67989fcea1829b28d, type: 3}
   spriteDown: {fileID: 0}
   spriteLeft: {fileID: 0}
-  spriteRight: {fileID: 0}
-  spriteBow: {fileID: 0}
+  spriteRight: {fileID: -2161276900132581064, guid: 9afa7f3876b9141338d2f5bbdaac78eb, type: 3}
+  spriteBow: {fileID: -415446080585258355, guid: 667c9f961c674421491092f8af2afe6c, type: 3}
   spriteJump: {fileID: 0}
-  spriteSitDown: {fileID: 0}
+  spriteSitDown: {fileID: -1780346783942680854, guid: 1c836066b3fce492b94a10411e3306bf, type: 3}
   spriteWave: {fileID: 0}
   spriteLaugh: {fileID: 0}
   spriteAngry: {fileID: 0}
