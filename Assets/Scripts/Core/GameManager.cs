@@ -337,6 +337,7 @@ public class GameManager : MonoBehaviour
         {
             Vector2Int npcEndPos = SlotManager.Instance.GetNPCEndPosition();
             npcPawn.SetPosition(npcEndPos);
+            npcPawn.ResetToIdle(); // 重置为基础图标
             Debug.Log($"NPC停在终点: {npcEndPos}");
         }
 
