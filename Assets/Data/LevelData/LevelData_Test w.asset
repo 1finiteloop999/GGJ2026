@@ -15,8 +15,8 @@ MonoBehaviour:
   levelName: Test_w
   levelIndex: 0
   startingPoints: 10
-  playerStartPosition: {x: 3, y: 0}
-  npcStartPosition: {x: 3, y: 0}
+  playerStartPosition: {x: 2, y: 2}
+  npcStartPosition: {x: 4, y: 4}
   npcCardSequence: []
   scoreA: 11
   scoreS: 14
@@ -28,4 +28,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
   - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
   - {fileID: 11400000, guid: 61f3df6ef157bb84ab025d4bf33ffe46, type: 2}
+  deckCards: []
+  deckDisplayCount: 3
   slotCount: 7
