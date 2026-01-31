@@ -14,25 +14,6 @@ public enum RankType
 }
 
 /// <summary>
-/// 卡槽配置数据
-/// </summary>
-[System.Serializable]
-public class SlotConfig
-{
-    [Tooltip("卡槽编号（执行顺序）")]
-    public int slotIndex;
-
-    [Tooltip("卡槽类型")]
-    public SlotType slotType;
-
-    public SlotConfig(int index, SlotType type)
-    {
-        slotIndex = index;
-        slotType = type;
-    }
-}
-
-/// <summary>
 /// 关卡数据 - 配置每个关卡的参数
 /// </summary>
 [CreateAssetMenu(fileName = "NewLevel", menuName = "MaskMimicry/Level Data")]
@@ -79,10 +60,6 @@ public class LevelData : ScriptableObject
 
     [Tooltip("每次展开牌库显示的卡牌数量")]
     public int deckDisplayCount = 3;
-
-    [Header("卡槽配置")]
-    [Tooltip("本关卡的卡槽配置（按编号顺序执行）")]
-    public List<SlotConfig> slotConfigs = new List<SlotConfig>();
 
     /// <summary>
     /// 获取NPC移动指令列表（用于路径预览，兼容旧接口）

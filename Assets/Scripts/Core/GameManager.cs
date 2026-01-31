@@ -131,16 +131,8 @@ public class GameManager : MonoBehaviour
         // 初始化牌库商店
         DeckShop.Instance?.Initialize(level.deckCards, level.deckDisplayCount);
 
-        // 初始化卡槽（如果有配置）
-        if (level.slotConfigs != null && level.slotConfigs.Count > 0)
-        {
-            SlotManager.Instance?.InitializeFromLevelData(level);
-        }
-        else
-        {
-            // 没有配置则自动查找场景中的卡槽
-            SlotManager.Instance?.FindSlotsInScene();
-        }
+        // 初始化卡槽（使用场景中已有的卡槽）
+        SlotManager.Instance?.Initialize();
 
         // 重置棋盘位置
         SetBoardTransform(boardCenterPosition, 1f);

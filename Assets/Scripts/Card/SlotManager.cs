@@ -10,13 +10,11 @@ public class SlotManager : MonoBehaviour
     public static SlotManager Instance { get; private set; }
 
     [Header("卡槽设置")]
-    [Tooltip("卡槽容器（卡槽的父物体）")]
+    [Tooltip("卡槽容器（卡槽的父物体，用于自动查找）")]
     [SerializeField] private Transform slotContainer;
 
-    [Tooltip("卡槽预制体")]
-    [SerializeField] private GameObject slotPrefab;
-
-    [Header("卡槽列表（自动填充）")]
+    [Header("卡槽列表")]
+    [Tooltip("场景中的卡槽（可手动拖入或自动查找）")]
     [SerializeField] private List<CardSlot> slots = new List<CardSlot>();
 
     [Header("路径预览")]
@@ -41,82 +39,30 @@ public class SlotManager : MonoBehaviour
 
     private void Start()
     {
+        // 如果没有手动设置卡槽，自动查找
+        if (slots == null || slots.Count == 0)
+        {
+            FindSlotsInScene();
+        }
+
         SetupPathPreview();
     }
 
     /// <summary>
-    /// 根据关卡配置初始化卡槽
+    /// 初始化卡槽（关卡开始时调用）
     /// </summary>
-    public void InitializeFromLevelData(LevelData levelData)
+    public void Initialize()
     {
-        if (levelData == null || levelData.slotConfigs == null)
+        // 确保卡槽列表已填充
+        if (slots == null || slots.Count == 0)
         {
-            Debug.LogError("[SlotManager] LevelData 或 slotConfigs 为空！");
-            return;
+            FindSlotsInScene();
         }
 
-        // 清除现有卡槽
-        ClearAllSlots();
-        foreach (var slot in slots)
-        {
-            if (slot != null)
-            {
-                Destroy(slot.gameObject);
-            }
-        }
-        slots.Clear();
+        // 清空卡槽内容（但不销毁卡槽）
+        ClearAllSlotContents();
 
-        // 根据配置创建卡槽
-        foreach (var config in levelData.slotConfigs)
-        {
-            CreateSlot(config.slotIndex, config.slotType);
-        }
-
-        // 按编号排序
-        slots = slots.OrderBy(s => s.SlotIndex).ToList();
-
-        Debug.Log($"[SlotManager] 从关卡配置初始化，共创建 {slots.Count} 个卡槽");
-    }
-
-    /// <summary>
-    /// 创建一个卡槽
-    /// </summary>
-    private CardSlot CreateSlot(int index, SlotType type)
-    {
-        if (slotPrefab == null)
-        {
-            Debug.LogError("[SlotManager] 缺少卡槽预制体！");
-            return null;
-        }
-
-        Transform parent = slotContainer != null ? slotContainer : transform;
-        GameObject slotObj = Instantiate(slotPrefab, parent);
-        slotObj.name = $"Slot_{index}_{type}";
-
-        CardSlot slot = slotObj.GetComponent<CardSlot>();
-        if (slot != null)
-        {
-            slot.SetSlotIndex(index);
-            slot.SetSlotType(type);
-            slots.Add(slot);
-            Debug.Log($"[SlotManager] 创建卡槽: 编号={index}, 类型={type}");
-        }
-
-        return slot;
-    }
-
-    /// <summary>
-    /// 手动注册卡槽（场景中已有的卡槽）
-    /// </summary>
-    public void RegisterSlots(List<CardSlot> existingSlots)
-    {
-        slots.Clear();
-        if (existingSlots != null)
-        {
-            slots.AddRange(existingSlots);
-            slots = slots.OrderBy(s => s.SlotIndex).ToList();
-        }
-        Debug.Log($"[SlotManager] 注册了 {slots.Count} 个卡槽");
+        Debug.Log($"[SlotManager] 初始化完成，共 {slots.Count} 个卡槽");
     }
 
     /// <summary>
@@ -138,6 +84,9 @@ public class SlotManager : MonoBehaviour
             slots = Object.FindObjectsByType<CardSlot>(FindObjectsSortMode.None).ToList();
         }
 
+        // 移除空引用
+        slots.RemoveAll(s => s == null);
+
         // 按SlotIndex排序
         slots = slots.OrderBy(s => s.SlotIndex).ToList();
 
@@ -146,6 +95,21 @@ public class SlotManager : MonoBehaviour
         {
             Debug.Log($"  - 卡槽 {slot.SlotIndex}: {slot.name} ({slot.Type})");
         }
+    }
+
+    /// <summary>
+    /// 手动注册卡槽
+    /// </summary>
+    public void RegisterSlots(List<CardSlot> existingSlots)
+    {
+        slots.Clear();
+        if (existingSlots != null)
+        {
+            slots.AddRange(existingSlots);
+            slots.RemoveAll(s => s == null);
+            slots = slots.OrderBy(s => s.SlotIndex).ToList();
+        }
+        Debug.Log($"[SlotManager] 注册了 {slots.Count} 个卡槽");
     }
 
     /// <summary>
@@ -513,13 +477,26 @@ public class SlotManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 清空所有卡槽
+    /// 清空所有卡槽的内容（不销毁卡槽本身）
     /// </summary>
     public void ClearAllSlots()
     {
+        ClearAllSlotContents();
+    }
+
+    /// <summary>
+    /// 清空所有卡槽的内容（不销毁卡槽本身）
+    /// </summary>
+    public void ClearAllSlotContents()
+    {
+        if (slots == null) return;
+
         foreach (var slot in slots)
         {
-            slot.Clear();
+            if (slot != null)
+            {
+                slot.Clear();
+            }
         }
 
         HidePathPreview();
