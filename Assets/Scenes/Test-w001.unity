@@ -329,10 +329,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &150093215
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,10 +545,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &207242786
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,10 +967,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &348947645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2167,10 +2173,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &779178016
 GameObject:
   m_ObjectHideFlags: 0
@@ -2649,10 +2657,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &1169853895
 GameObject:
   m_ObjectHideFlags: 0
@@ -3181,6 +3191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a362a65e048081d4386eda24b4c4c39c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotContainer: {fileID: 0}
+  slotPrefab: {fileID: 0}
   slots:
   - {fileID: 159872321}
   - {fileID: 1563024543}
@@ -3348,7 +3360,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -10
   m_Sprite: {fileID: 7379550689782283689, guid: 569dac0b3c002457f9a050a5b14ae391, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3598,10 +3610,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  slotType: 0
   slotImage: {fileID: 0}
   normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
+  invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
 --- !u!1 &1567405952
 GameObject:
   m_ObjectHideFlags: 0

@@ -64,4 +64,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
   - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
   deckDisplayCount: 3
-  slotCount: 7
+  slotConfigs:
+  - slotIndex: 0
+    slotType: 0
+  - slotIndex: 1
+    slotType: 1
+  - slotIndex: 2
+    slotType: 2
+  - slotIndex: 3
+    slotType: 0
+  - slotIndex: 4
+    slotType: 1
+  - slotIndex: 5
+    slotType: 2
+  - slotIndex: 6
+    slotType: 2
