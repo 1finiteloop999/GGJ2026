@@ -15,7 +15,7 @@ MonoBehaviour:
   levelName: Test_w001
   levelIndex: 0
   startingPoints: 10
-  playerStartPosition: {x: 7, y: 3}
+  playerStartPosition: {x: 8, y: 3}
   npcStartPosition: {x: 5, y: 1}
   npcCardSequence:
   - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
@@ -63,4 +63,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
   - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
   - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
+  - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
+  - {fileID: 11400000, guid: 927ddc629acde45e39bdd1ec99f21067, type: 2}
+  - {fileID: 11400000, guid: 927ddc629acde45e39bdd1ec99f21067, type: 2}
+  - {fileID: 11400000, guid: 6290224b29685401c9ec19395b832599, type: 2}
+  - {fileID: 11400000, guid: 6290224b29685401c9ec19395b832599, type: 2}
+  - {fileID: 11400000, guid: c9a0d0b3e0c0b492a8fa202185a3ca53, type: 2}
+  - {fileID: 11400000, guid: c9a0d0b3e0c0b492a8fa202185a3ca53, type: 2}
+  - {fileID: 11400000, guid: 1c62160e5c81cd74e865344fbaeb6969, type: 2}
+  - {fileID: 11400000, guid: 1c62160e5c81cd74e865344fbaeb6969, type: 2}
+  - {fileID: 11400000, guid: 235f6e027e088e24586bf8b59da3bfa5, type: 2}
+  - {fileID: 11400000, guid: 235f6e027e088e24586bf8b59da3bfa5, type: 2}
+  - {fileID: 11400000, guid: 8262d40084bf29d458255e95a4fce090, type: 2}
+  - {fileID: 11400000, guid: 8262d40084bf29d458255e95a4fce090, type: 2}
+  - {fileID: 11400000, guid: b53629900ffde49fabc719e2638ce82c, type: 2}
+  - {fileID: 11400000, guid: b53629900ffde49fabc719e2638ce82c, type: 2}
+  - {fileID: 11400000, guid: b53629900ffde49fabc719e2638ce82c, type: 2}
+  - {fileID: 11400000, guid: b53629900ffde49fabc719e2638ce82c, type: 2}
+  - {fileID: 11400000, guid: 79efd3f76c16a484484d3a22025eebc9, type: 2}
+  - {fileID: 11400000, guid: 79efd3f76c16a484484d3a22025eebc9, type: 2}
   deckDisplayCount: 3

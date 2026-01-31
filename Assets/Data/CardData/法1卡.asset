@@ -15,14 +15,14 @@ MonoBehaviour:
   cardName: 1 card
   cardSprite: {fileID: -4525265941147271366, guid: f3e273e76bdcc455bb41e6ca3865f7ce, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
-  isSpellCard: 0
+  isSpellCard: 1
   direction: 0
   stepCount: 0
   isPause: 0
   actionType: 0
   expressionType: 0
   spellGainPoints: 0
-  spellReplayNPC: 1
+  spellReplayNPC: 0
   spellAddCards: 1
   valuePoints: 0
   buyCost: 0

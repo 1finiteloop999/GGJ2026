@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: 2 cards
   cardSprite: {fileID: -3762098255463971472, guid: ca45985fda7c84a499cbb8de26521abc, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
-  isSpellCard: 0
+  isSpellCard: 1
   direction: 0
   stepCount: 0
   isPause: 0
