@@ -1561,9 +1561,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5461ac858179663438d511aa0c2e10de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHandSize: 5
   handContainer: {fileID: 1343388620}
   cardPrefab: {fileID: 914349447506620382, guid: 596e6c3d485f3494ab1cb262edc023a0, type: 3}
+  handContainerRect: {fileID: 1343388620}
+  handLayoutGroup: {fileID: 1343388621}
+  cardWidth: 100
+  defaultSpacing: 10
+  minSpacing: -80
   sellArea: {fileID: 1156282232}
   useArea: {fileID: 1567405953}
   initialCards: []
@@ -4885,7 +4889,6 @@ MonoBehaviour:
   tipText: {fileID: 706586377}
   cardPrefab: {fileID: 914349447506620382, guid: 596e6c3d485f3494ab1cb262edc023a0, type: 3}
   handContainer: {fileID: 1343388620}
-  handLayoutGroup: {fileID: 1343388621}
   animationDuration: 0.3
   handShrinkAmount: 420
   displayCount: 3

@@ -32,8 +32,8 @@ public class DeckShop : MonoBehaviour
     [Tooltip("手牌容器的RectTransform")]
     [SerializeField] private RectTransform handContainer;
 
-    [Tooltip("手牌的Horizontal Layout Group")]
-    [SerializeField] private HorizontalLayoutGroup handLayoutGroup;
+    [Tooltip("手牌容器的原始宽度（如果自动检测失败，手动设置）")]
+    [SerializeField] private float handContainerOriginalWidth = 0f;
 
     [Header("动画设置")]
     [Tooltip("动画持续时间")]
@@ -59,10 +59,13 @@ public class DeckShop : MonoBehaviour
     // 动画相关
     private float deckPanelOriginalWidth;
     private Vector2 handContainerOriginalSizeDelta;
-    private float handLayoutOriginalSpacing;
 
     // 提示动画
     private Coroutine tipFadeCoroutine;
+
+    // 记录原始offsetMax
+    private Vector2 handContainerOriginalOffsetMax;
+    private bool hasRecordedOriginalOffset = false;
 
     private void Awake()
     {
@@ -74,6 +77,38 @@ public class DeckShop : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+
+        // 在Awake中记录原始值（最早执行）
+        RecordOriginalValues();
+    }
+
+    private void RecordOriginalValues()
+    {
+        if (hasRecordedOriginalOffset) return;
+
+        if (handContainer != null)
+        {
+            // 记录原始 offsetMax
+            handContainerOriginalOffsetMax = handContainer.offsetMax;
+
+            // 使用 rect.size 获取实际渲染尺寸
+            float actualWidth = handContainer.rect.width;
+            float actualHeight = handContainer.rect.height;
+
+            // 如果自动检测失败，使用Inspector中设置的值
+            if (actualWidth <= 0 && handContainerOriginalWidth > 0)
+            {
+                actualWidth = handContainerOriginalWidth;
+            }
+
+            if (actualWidth > 0)
+            {
+                handContainerOriginalSizeDelta = new Vector2(actualWidth, actualHeight);
+            }
+
+            hasRecordedOriginalOffset = true;
+            Debug.Log($"[DeckShop] 记录原始值: offsetMax={handContainerOriginalOffsetMax}, rect.width={actualWidth}, Inspector设置={handContainerOriginalWidth}");
         }
     }
 
@@ -93,16 +128,8 @@ public class DeckShop : MonoBehaviour
             deckPanel.gameObject.SetActive(false);
         }
 
-        if (handContainer != null)
-        {
-            handContainerOriginalSizeDelta = handContainer.sizeDelta;
-        }
-
-        // 记录手牌布局原始值
-        if (handLayoutGroup != null)
-        {
-            handLayoutOriginalSpacing = handLayoutGroup.spacing;
-        }
+        // 确保记录了原始值
+        RecordOriginalValues();
 
         // 隐藏提示
         if (tipText != null)
@@ -138,18 +165,16 @@ public class DeckShop : MonoBehaviour
             deckPanel.gameObject.SetActive(false);
         }
 
-        // 重置手牌容器
+        // 重置手牌容器（使用offsetMax重置）
         if (handContainer != null)
         {
             DOTween.Kill(handContainer);
-            handContainer.sizeDelta = handContainerOriginalSizeDelta;
+            // 重置为原始offsetMax
+            handContainer.offsetMax = handContainerOriginalOffsetMax;
         }
 
-        // 重置手牌布局
-        if (handLayoutGroup != null)
-        {
-            handLayoutGroup.spacing = handLayoutOriginalSpacing;
-        }
+        // 通知DeckManager更新布局
+        DeckManager.Instance?.OnContainerSizeChanged();
 
         Debug.Log($"[DeckShop] 初始化牌库，共 {availableDeck.Count} 张卡牌");
     }
@@ -256,105 +281,46 @@ public class DeckShop : MonoBehaviour
     /// </summary>
     private void AnimateHandShrink(bool shrink)
     {
-        if (handContainer != null)
+        if (handContainer == null)
         {
-            Vector2 targetSize = shrink
-                ? new Vector2(handContainerOriginalSizeDelta.x - handShrinkAmount, handContainerOriginalSizeDelta.y)
-                : handContainerOriginalSizeDelta;
-
-            handContainer.DOSizeDelta(targetSize, animationDuration).SetEase(Ease.OutCubic);
+            Debug.LogError("[DeckShop] AnimateHandShrink: handContainer 为空！");
+            return;
         }
 
-        // 调整手牌间距让卡牌重叠
-        if (handLayoutGroup != null)
+        // 收缩时：在原始offsetMax基础上减少（向左收缩）
+        // 展开时：恢复到原始offsetMax
+        Vector2 targetOffsetMax;
+        if (shrink)
         {
-            // 计算目标间距：收缩时减少间距（负数让卡牌重叠）
-            float targetSpacing = shrink
-                ? CalculateShrunkSpacing()
-                : handLayoutOriginalSpacing;
-
-            // 使用DOTween动画调整间距
-            float currentSpacing = handLayoutGroup.spacing;
-            DOTween.To(
-                () => currentSpacing,
-                x => {
-                    currentSpacing = x;
-                    handLayoutGroup.spacing = x;
-                    // 强制刷新布局
-                    Canvas.ForceUpdateCanvases();
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(handContainer);
-                },
-                targetSpacing,
-                animationDuration
-            ).SetEase(Ease.OutCubic);
+            targetOffsetMax = new Vector2(
+                handContainerOriginalOffsetMax.x - handShrinkAmount,
+                handContainerOriginalOffsetMax.y
+            );
         }
-    }
-
-    /// <summary>
-    /// 计算收缩时的手牌间距
-    /// </summary>
-    private float CalculateShrunkSpacing()
-    {
-        if (handContainer == null || handLayoutGroup == null)
+        else
         {
-            return handLayoutOriginalSpacing;
+            targetOffsetMax = handContainerOriginalOffsetMax;
         }
 
-        // 获取手牌数量
-        int cardCount = DeckManager.Instance?.GetHandCount() ?? 0;
-        if (cardCount <= 1)
-        {
-            return handLayoutOriginalSpacing;
-        }
+        Debug.Log($"[DeckShop] 手牌{(shrink ? "收缩" : "展开")}: 原始={handContainerOriginalOffsetMax}, 当前={handContainer.offsetMax}, 目标={targetOffsetMax}");
 
-        // 获取单张卡牌宽度
-        float cardWidth = GetCardWidth();
-
-        // 计算收缩后可用宽度
-        float shrunkWidth = handContainerOriginalSizeDelta.x - handShrinkAmount;
-        float paddingWidth = handLayoutGroup.padding.left + handLayoutGroup.padding.right;
-        float availableWidth = shrunkWidth - paddingWidth;
-
-        // 计算需要的间距
-        // 公式：availableWidth = cardWidth + (cardCount - 1) * (cardWidth + spacing)
-        // 解出 spacing = (availableWidth - cardWidth * cardCount) / (cardCount - 1)
-        float neededSpacing = (availableWidth - cardWidth * cardCount) / (cardCount - 1);
-
-        // 限制最小间距（最多重叠卡牌宽度的80%）
-        float minSpacing = -cardWidth * 0.8f;
-
-        Debug.Log($"[DeckShop] 手牌收缩计算: 卡牌数={cardCount}, 卡牌宽度={cardWidth}, 可用宽度={availableWidth}, 计算间距={neededSpacing}");
-
-        return Mathf.Max(neededSpacing, minSpacing);
-    }
-
-    /// <summary>
-    /// 获取卡牌宽度
-    /// </summary>
-    private float GetCardWidth()
-    {
-        // 尝试从预制体获取
-        if (cardPrefab != null)
-        {
-            RectTransform cardRect = cardPrefab.GetComponent<RectTransform>();
-            if (cardRect != null)
-            {
-                return cardRect.rect.width > 0 ? cardRect.rect.width : cardRect.sizeDelta.x;
-            }
-        }
-
-        // 尝试从现有手牌获取
-        if (handContainer != null && handContainer.childCount > 0)
-        {
-            RectTransform firstCard = handContainer.GetChild(0) as RectTransform;
-            if (firstCard != null)
-            {
-                return firstCard.rect.width > 0 ? firstCard.rect.width : firstCard.sizeDelta.x;
-            }
-        }
-
-        // 默认值
-        return 120f;
+        // 使用 DOTween 动画 offsetMax
+        DOTween.To(
+            () => handContainer.offsetMax,
+            x => handContainer.offsetMax = x,
+            targetOffsetMax,
+            animationDuration
+        )
+        .SetEase(Ease.OutCubic)
+        .OnUpdate(() => {
+            // 动画过程中持续更新手牌布局
+            DeckManager.Instance?.OnContainerSizeChanged();
+        })
+        .OnComplete(() => {
+            // 动画完成后最终更新
+            DeckManager.Instance?.OnContainerSizeChanged();
+            Debug.Log($"[DeckShop] 手牌动画完成: rect.width={handContainer.rect.width}");
+        });
     }
 
     /// <summary>
@@ -457,11 +423,8 @@ public class DeckShop : MonoBehaviour
         // 销毁展示区的卡牌UI
         Destroy(cardUI.gameObject);
 
-        // 添加到手牌
+        // 添加到手牌（DeckManager.AddCardToHand会自动更新布局）
         DeckManager.Instance?.AddCardToHand(cardData);
-
-        // 更新手牌间距
-        UpdateHandSpacing();
 
         if (cardData.IsSpellCard)
         {
@@ -480,19 +443,6 @@ public class DeckShop : MonoBehaviour
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// 更新手牌间距（购买新卡牌后调用）
-    /// </summary>
-    private void UpdateHandSpacing()
-    {
-        if (!isExpanded || handLayoutGroup == null) return;
-
-        float targetSpacing = CalculateShrunkSpacing();
-        handLayoutGroup.spacing = targetSpacing;
-        Canvas.ForceUpdateCanvases();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(handContainer);
     }
 
     /// <summary>
