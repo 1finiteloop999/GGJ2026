@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 /// <summary>
 /// 牌库管理器 - 管理牌库的展开/收起和卡牌抽取
@@ -15,8 +16,8 @@ public class DeckShop : MonoBehaviour
     [Tooltip("牌库展开/收起按钮")]
     [SerializeField] private Button deckToggleButton;
 
-    [Tooltip("牌库展开面板")]
-    [SerializeField] private GameObject deckPanel;
+    [Tooltip("牌库展开面板（RectTransform）")]
+    [SerializeField] private RectTransform deckPanel;
 
     [Tooltip("卡牌显示容器（需要Horizontal Layout Group）")]
     [SerializeField] private Transform cardDisplayContainer;
@@ -27,7 +28,21 @@ public class DeckShop : MonoBehaviour
     [Tooltip("卡牌预制体")]
     [SerializeField] private GameObject cardPrefab;
 
-    [Header("设置")]
+    [Header("手牌区域引用")]
+    [Tooltip("手牌容器的RectTransform")]
+    [SerializeField] private RectTransform handContainer;
+
+    [Tooltip("手牌的Horizontal Layout Group")]
+    [SerializeField] private HorizontalLayoutGroup handLayoutGroup;
+
+    [Header("动画设置")]
+    [Tooltip("动画持续时间")]
+    [SerializeField] private float animationDuration = 0.3f;
+
+    [Tooltip("手牌收缩的距离")]
+    [SerializeField] private float handShrinkAmount = 300f;
+
+    [Header("其他设置")]
     [Tooltip("每次显示的卡牌数量")]
     [SerializeField] private int displayCount = 3;
 
@@ -35,10 +50,16 @@ public class DeckShop : MonoBehaviour
     [SerializeField] private float tipFadeDuration = 1f;
 
     // 牌库状态
-    private List<CardData> availableDeck = new List<CardData>();  // 可用的牌库（未被抽走的）
-    private List<CardData> currentDisplayCards = new List<CardData>();  // 当前展示的卡牌数据
-    private List<CardUI> displayCardUIs = new List<CardUI>();  // 当前展示的卡牌UI
+    private List<CardData> availableDeck = new List<CardData>();
+    private List<CardData> currentDisplayCards = new List<CardData>();
+    private List<CardUI> displayCardUIs = new List<CardUI>();
     private bool isExpanded = false;
+    private bool isAnimating = false;
+
+    // 动画相关
+    private float deckPanelOriginalWidth;
+    private Vector2 handContainerOriginalSizeDelta;
+    private float handLayoutOriginalSpacing;
 
     // 提示动画
     private Coroutine tipFadeCoroutine;
@@ -64,10 +85,23 @@ public class DeckShop : MonoBehaviour
             deckToggleButton.onClick.AddListener(OnToggleDeck);
         }
 
-        // 初始状态为收起
+        // 记录原始尺寸
         if (deckPanel != null)
         {
-            deckPanel.SetActive(false);
+            deckPanelOriginalWidth = deckPanel.rect.width;
+            // 确保初始状态是隐藏的
+            deckPanel.gameObject.SetActive(false);
+        }
+
+        if (handContainer != null)
+        {
+            handContainerOriginalSizeDelta = handContainer.sizeDelta;
+        }
+
+        // 记录手牌布局原始值
+        if (handLayoutGroup != null)
+        {
+            handLayoutOriginalSpacing = handLayoutGroup.spacing;
         }
 
         // 隐藏提示
@@ -95,11 +129,26 @@ public class DeckShop : MonoBehaviour
 
         displayCount = displayNum;
         isExpanded = false;
+        isAnimating = false;
 
-        // 收起牌库
+        // 重置牌库面板
         if (deckPanel != null)
         {
-            deckPanel.SetActive(false);
+            DOTween.Kill(deckPanel);
+            deckPanel.gameObject.SetActive(false);
+        }
+
+        // 重置手牌容器
+        if (handContainer != null)
+        {
+            DOTween.Kill(handContainer);
+            handContainer.sizeDelta = handContainerOriginalSizeDelta;
+        }
+
+        // 重置手牌布局
+        if (handLayoutGroup != null)
+        {
+            handLayoutGroup.spacing = handLayoutOriginalSpacing;
         }
 
         Debug.Log($"[DeckShop] 初始化牌库，共 {availableDeck.Count} 张卡牌");
@@ -110,6 +159,8 @@ public class DeckShop : MonoBehaviour
     /// </summary>
     public void OnToggleDeck()
     {
+        if (isAnimating) return;
+
         if (isExpanded)
         {
             CollapseDeck();
@@ -133,17 +184,36 @@ public class DeckShop : MonoBehaviour
         }
 
         isExpanded = true;
-
-        if (deckPanel != null)
-        {
-            deckPanel.SetActive(true);
-        }
+        isAnimating = true;
 
         // 补充展示卡牌
         RefillDisplayCards();
 
-        // 创建卡牌UI
-        UpdateDisplayUI();
+        // 显示面板并播放动画
+        if (deckPanel != null)
+        {
+            // 设置初始状态：缩放X为0，从右边开始展开
+            deckPanel.localScale = new Vector3(0, 1, 1);
+            deckPanel.gameObject.SetActive(true);
+
+            // 动画：X缩放从0到1
+            deckPanel.DOScaleX(1, animationDuration)
+                .SetEase(Ease.OutCubic)
+                .OnComplete(() =>
+                {
+                    // 动画完成后创建卡牌UI
+                    UpdateDisplayUI();
+                    isAnimating = false;
+                });
+        }
+        else
+        {
+            UpdateDisplayUI();
+            isAnimating = false;
+        }
+
+        // 手牌收缩动画
+        AnimateHandShrink(true);
 
         Debug.Log($"[DeckShop] 展开牌库，显示 {currentDisplayCards.Count} 张卡牌");
     }
@@ -154,13 +224,137 @@ public class DeckShop : MonoBehaviour
     private void CollapseDeck()
     {
         isExpanded = false;
+        isAnimating = true;
 
+        // 先清除卡牌UI
+        ClearDisplayCards();
+
+        // 动画：X缩放从1到0
         if (deckPanel != null)
         {
-            deckPanel.SetActive(false);
+            deckPanel.DOScaleX(0, animationDuration)
+                .SetEase(Ease.InCubic)
+                .OnComplete(() =>
+                {
+                    deckPanel.gameObject.SetActive(false);
+                    isAnimating = false;
+                });
+        }
+        else
+        {
+            isAnimating = false;
         }
 
+        // 手牌展开动画
+        AnimateHandShrink(false);
+
         Debug.Log("[DeckShop] 收起牌库");
+    }
+
+    /// <summary>
+    /// 手牌收缩/展开动画
+    /// </summary>
+    private void AnimateHandShrink(bool shrink)
+    {
+        if (handContainer != null)
+        {
+            Vector2 targetSize = shrink
+                ? new Vector2(handContainerOriginalSizeDelta.x - handShrinkAmount, handContainerOriginalSizeDelta.y)
+                : handContainerOriginalSizeDelta;
+
+            handContainer.DOSizeDelta(targetSize, animationDuration).SetEase(Ease.OutCubic);
+        }
+
+        // 调整手牌间距让卡牌重叠
+        if (handLayoutGroup != null)
+        {
+            // 计算目标间距：收缩时减少间距（负数让卡牌重叠）
+            float targetSpacing = shrink
+                ? CalculateShrunkSpacing()
+                : handLayoutOriginalSpacing;
+
+            // 使用DOTween动画调整间距
+            float currentSpacing = handLayoutGroup.spacing;
+            DOTween.To(
+                () => currentSpacing,
+                x => {
+                    currentSpacing = x;
+                    handLayoutGroup.spacing = x;
+                    // 强制刷新布局
+                    Canvas.ForceUpdateCanvases();
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(handContainer);
+                },
+                targetSpacing,
+                animationDuration
+            ).SetEase(Ease.OutCubic);
+        }
+    }
+
+    /// <summary>
+    /// 计算收缩时的手牌间距
+    /// </summary>
+    private float CalculateShrunkSpacing()
+    {
+        if (handContainer == null || handLayoutGroup == null)
+        {
+            return handLayoutOriginalSpacing;
+        }
+
+        // 获取手牌数量
+        int cardCount = DeckManager.Instance?.GetHandCount() ?? 0;
+        if (cardCount <= 1)
+        {
+            return handLayoutOriginalSpacing;
+        }
+
+        // 获取单张卡牌宽度
+        float cardWidth = GetCardWidth();
+
+        // 计算收缩后可用宽度
+        float shrunkWidth = handContainerOriginalSizeDelta.x - handShrinkAmount;
+        float paddingWidth = handLayoutGroup.padding.left + handLayoutGroup.padding.right;
+        float availableWidth = shrunkWidth - paddingWidth;
+
+        // 计算需要的间距
+        // 公式：availableWidth = cardWidth + (cardCount - 1) * (cardWidth + spacing)
+        // 解出 spacing = (availableWidth - cardWidth * cardCount) / (cardCount - 1)
+        float neededSpacing = (availableWidth - cardWidth * cardCount) / (cardCount - 1);
+
+        // 限制最小间距（最多重叠卡牌宽度的80%）
+        float minSpacing = -cardWidth * 0.8f;
+
+        Debug.Log($"[DeckShop] 手牌收缩计算: 卡牌数={cardCount}, 卡牌宽度={cardWidth}, 可用宽度={availableWidth}, 计算间距={neededSpacing}");
+
+        return Mathf.Max(neededSpacing, minSpacing);
+    }
+
+    /// <summary>
+    /// 获取卡牌宽度
+    /// </summary>
+    private float GetCardWidth()
+    {
+        // 尝试从预制体获取
+        if (cardPrefab != null)
+        {
+            RectTransform cardRect = cardPrefab.GetComponent<RectTransform>();
+            if (cardRect != null)
+            {
+                return cardRect.rect.width > 0 ? cardRect.rect.width : cardRect.sizeDelta.x;
+            }
+        }
+
+        // 尝试从现有手牌获取
+        if (handContainer != null && handContainer.childCount > 0)
+        {
+            RectTransform firstCard = handContainer.GetChild(0) as RectTransform;
+            if (firstCard != null)
+            {
+                return firstCard.rect.width > 0 ? firstCard.rect.width : firstCard.sizeDelta.x;
+            }
+        }
+
+        // 默认值
+        return 120f;
     }
 
     /// <summary>
@@ -168,7 +362,6 @@ public class DeckShop : MonoBehaviour
     /// </summary>
     private void RefillDisplayCards()
     {
-        // 计算需要补充的数量
         int needCount = displayCount - currentDisplayCards.Count;
 
         if (needCount <= 0 || availableDeck.Count == 0)
@@ -176,7 +369,6 @@ public class DeckShop : MonoBehaviour
             return;
         }
 
-        // 从牌库中随机抽取
         for (int i = 0; i < needCount && availableDeck.Count > 0; i++)
         {
             int randomIndex = Random.Range(0, availableDeck.Count);
@@ -194,7 +386,6 @@ public class DeckShop : MonoBehaviour
     /// </summary>
     private void UpdateDisplayUI()
     {
-        // 清空现有UI
         ClearDisplayCards();
 
         if (cardPrefab == null || cardDisplayContainer == null)
@@ -203,7 +394,6 @@ public class DeckShop : MonoBehaviour
             return;
         }
 
-        // 为每张展示卡牌创建UI
         foreach (var cardData in currentDisplayCards)
         {
             GameObject cardObj = Instantiate(cardPrefab, cardDisplayContainer);
@@ -213,9 +403,6 @@ public class DeckShop : MonoBehaviour
             {
                 cardUI.Setup(cardData);
                 displayCardUIs.Add(cardUI);
-
-                // 添加购买事件
-                // 注意：这里需要特殊处理，让卡牌可以被拖拽购买
             }
         }
     }
@@ -255,13 +442,6 @@ public class DeckShop : MonoBehaviour
             return false;
         }
 
-        // 检查手牌是否已满
-        if (DeckManager.Instance != null && !DeckManager.Instance.CanAddCard())
-        {
-            ShowTip("Hand is full!");
-            return false;
-        }
-
         // 扣除点数
         DeckManager.Instance?.ModifyPoints(-cost);
 
@@ -275,9 +455,12 @@ public class DeckShop : MonoBehaviour
         // 添加到手牌
         DeckManager.Instance?.AddCardToHand(cardData);
 
+        // 更新手牌间距
+        UpdateHandSpacing();
+
         Debug.Log($"[DeckShop] 购买卡牌: {cardData.cardName}，花费 {cost} 点数");
 
-        // 如果展示区空了且牌库也空了，显示提示
+        // 如果展示区空了且牌库也空了，显示提示并收起
         if (currentDisplayCards.Count == 0 && availableDeck.Count == 0)
         {
             ShowTip("The deck is empty!");
@@ -288,7 +471,20 @@ public class DeckShop : MonoBehaviour
     }
 
     /// <summary>
-    /// 使用展示区的卡牌（直接使用，不加入手牌）
+    /// 更新手牌间距（购买新卡牌后调用）
+    /// </summary>
+    private void UpdateHandSpacing()
+    {
+        if (!isExpanded || handLayoutGroup == null) return;
+
+        float targetSpacing = CalculateShrunkSpacing();
+        handLayoutGroup.spacing = targetSpacing;
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(handContainer);
+    }
+
+    /// <summary>
+    /// 使用展示区的卡牌
     /// </summary>
     public void UseDisplayCard(CardUI cardUI)
     {
@@ -299,16 +495,11 @@ public class DeckShop : MonoBehaviour
 
         CardData cardData = cardUI.CardData;
 
-        // 从展示列表中移除
         currentDisplayCards.Remove(cardData);
         displayCardUIs.Remove(cardUI);
 
-        // 销毁卡牌UI
-        Destroy(cardUI.gameObject);
-
         Debug.Log($"[DeckShop] 使用展示区卡牌: {cardData.cardName}");
 
-        // 检查是否需要提示牌库空了
         if (currentDisplayCards.Count == 0 && availableDeck.Count == 0)
         {
             ShowTip("The deck is empty!");
@@ -322,7 +513,6 @@ public class DeckShop : MonoBehaviour
     {
         if (tipText == null) return;
 
-        // 停止之前的动画
         if (tipFadeCoroutine != null)
         {
             StopCoroutine(tipFadeCoroutine);
@@ -332,7 +522,6 @@ public class DeckShop : MonoBehaviour
         tipText.gameObject.SetActive(true);
         tipText.alpha = 1f;
 
-        // 开始渐隐动画
         tipFadeCoroutine = StartCoroutine(FadeTipCoroutine());
     }
 
@@ -341,16 +530,13 @@ public class DeckShop : MonoBehaviour
     /// </summary>
     private IEnumerator FadeTipCoroutine()
     {
-        // 显示1秒
         yield return new WaitForSeconds(1f);
 
-        // 渐隐
         float elapsed = 0f;
         while (elapsed < tipFadeDuration)
         {
             elapsed += Time.deltaTime;
-            float alpha = 1f - (elapsed / tipFadeDuration);
-            tipText.alpha = alpha;
+            tipText.alpha = 1f - (elapsed / tipFadeDuration);
             yield return null;
         }
 
