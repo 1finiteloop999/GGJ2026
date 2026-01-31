@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 /// <summary>
 /// 卡牌UI - 负责卡牌的显示和拖拽
@@ -13,6 +14,16 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
     [Header("拖拽设置")]
     [SerializeField] private float dragScale = 1.1f;
+
+    [Header("悬停设置")]
+    [Tooltip("悬停时卡牌放大倍数")]
+    [SerializeField] private float hoverScale = 1.3f;
+    [Tooltip("悬停动画时间")]
+    [SerializeField] private float hoverAnimDuration = 0.1f;
+    [Tooltip("悬停描边颜色")]
+    [SerializeField] private Color outlineColor = Color.yellow;
+    [Tooltip("悬停描边粗细")]
+    [SerializeField] private float outlineThickness = 3f;
 
     // 卡牌数据
     public CardData CardData { get; private set; }
@@ -29,6 +40,10 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
     // 是否来自牌库展示区
     public bool IsFromDeckShop { get; set; } = false;
+
+    // 悬停状态
+    private bool isHovering = false;
+    private bool isDragging = false;
 
     private void Awake()
     {
@@ -69,6 +84,14 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        isDragging = true;
+
+        // 如果正在悬停，先取消悬停效果
+        if (isHovering)
+        {
+            CancelHover();
+        }
+
         // 记录原始状态
         originalPosition = transform.position;
         originalParent = transform.parent;
@@ -110,6 +133,8 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        isDragging = false;
+
         // 恢复状态
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
@@ -151,12 +176,151 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        transform.localScale = Vector3.one * 1.05f;
+        if (isDragging) return;
+
+        isHovering = true;
+
+        // 停止之前的动画
+        DOTween.Kill(transform);
+
+        // 添加临时Canvas确保在最上层显示
+        Canvas tempCanvas = GetComponent<Canvas>();
+        if (tempCanvas == null)
+        {
+            tempCanvas = gameObject.AddComponent<Canvas>();
+        }
+        tempCanvas.overrideSorting = true;
+        tempCanvas.sortingOrder = 100;
+
+        // 确保有GraphicRaycaster才能接收点击
+        if (GetComponent<GraphicRaycaster>() == null)
+        {
+            gameObject.AddComponent<GraphicRaycaster>();
+        }
+
+        // 添加描边效果
+        ShowOutline(true);
+
+        // 只放大，不移动位置
+        transform.DOScale(hoverScale, hoverAnimDuration).SetEase(Ease.OutCubic);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (isDragging) return;
+
+        if (isHovering)
+        {
+            RestoreFromHover();
+        }
+    }
+
+    /// <summary>
+    /// 从悬停状态恢复
+    /// </summary>
+    private void RestoreFromHover()
+    {
+        isHovering = false;
+
+        // 停止之前的动画
+        DOTween.Kill(transform);
+
+        // 恢复Canvas排序
+        Canvas tempCanvas = GetComponent<Canvas>();
+        if (tempCanvas != null)
+        {
+            tempCanvas.overrideSorting = false;
+        }
+
+        // 移除描边效果
+        ShowOutline(false);
+
+        // 恢复大小
+        transform.DOScale(1f, hoverAnimDuration).SetEase(Ease.OutCubic);
+    }
+
+    /// <summary>
+    /// 取消悬停（开始拖拽时调用）
+    /// </summary>
+    private void CancelHover()
+    {
+        isHovering = false;
+        DOTween.Kill(transform);
         transform.localScale = Vector3.one;
+
+        // 恢复Canvas排序
+        Canvas tempCanvas = GetComponent<Canvas>();
+        if (tempCanvas != null)
+        {
+            tempCanvas.overrideSorting = false;
+        }
+
+        // 移除描边效果
+        ShowOutline(false);
+    }
+
+    /// <summary>
+    /// 显示/隐藏描边效果
+    /// </summary>
+    private void ShowOutline(bool show)
+    {
+        // 获取要添加描边的目标（cardBackground 或自身）
+        Image targetImage = cardBackground != null ? cardBackground : GetComponent<Image>();
+
+        if (targetImage == null) return;
+
+        Outline outline = targetImage.GetComponent<Outline>();
+
+        if (show)
+        {
+            // 添加或启用描边
+            if (outline == null)
+            {
+                outline = targetImage.gameObject.AddComponent<Outline>();
+            }
+            outline.effectColor = outlineColor;
+            outline.effectDistance = new Vector2(outlineThickness, -outlineThickness);
+            outline.useGraphicAlpha = false;
+            outline.enabled = true;
+
+            // 添加多个Outline组件实现更完整的描边（四个方向）
+            Outline[] outlines = targetImage.GetComponents<Outline>();
+            if (outlines.Length < 4)
+            {
+                // 添加额外的Outline组件覆盖四个角
+                for (int i = outlines.Length; i < 4; i++)
+                {
+                    Outline newOutline = targetImage.gameObject.AddComponent<Outline>();
+                    newOutline.effectColor = outlineColor;
+                    newOutline.useGraphicAlpha = false;
+
+                    // 四个方向的偏移
+                    switch (i)
+                    {
+                        case 0: newOutline.effectDistance = new Vector2(outlineThickness, outlineThickness); break;
+                        case 1: newOutline.effectDistance = new Vector2(-outlineThickness, outlineThickness); break;
+                        case 2: newOutline.effectDistance = new Vector2(outlineThickness, -outlineThickness); break;
+                        case 3: newOutline.effectDistance = new Vector2(-outlineThickness, -outlineThickness); break;
+                    }
+                }
+            }
+
+            // 启用所有Outline
+            foreach (var o in targetImage.GetComponents<Outline>())
+            {
+                o.effectColor = outlineColor;
+                o.enabled = true;
+            }
+        }
+        else
+        {
+            // 禁用所有Outline
+            Outline[] outlines = targetImage.GetComponents<Outline>();
+            foreach (var o in outlines)
+            {
+                o.enabled = false;
+            }
+        }
     }
 
     #endregion
@@ -179,5 +343,11 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         transform.SetParent(newParent);
         transform.localPosition = Vector3.zero;
         transform.localScale = Vector3.one;
+    }
+
+    private void OnDisable()
+    {
+        // 清理DOTween动画
+        DOTween.Kill(transform);
     }
 }

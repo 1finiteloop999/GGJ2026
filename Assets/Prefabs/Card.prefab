@@ -51,6 +51,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardBackground: {fileID: 768737036721512402}
   dragScale: 1.1
+  hoverScale: 1.1
+  hoverAnimDuration: 0.1
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  outlineThickness: 0.5
 --- !u!1 &8778748152035507366
 GameObject:
   m_ObjectHideFlags: 0
