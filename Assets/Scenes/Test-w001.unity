@@ -2304,7 +2304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c54a60e65d7bd43a4a3d4750cfec7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 6
+  width: 18
   height: 6
   cellSize: 1
   lightColor: {r: 1, g: 1, b: 1, a: 1}
@@ -5130,8 +5130,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointsText: {fileID: 1482762687}
-  handCountText: {fileID: 0}
-  phaseText: {fileID: 0}
   startPlanningButton: {fileID: 348947647}
   executeButton: {fileID: 579176564}
   replayButton: {fileID: 150093217}
