@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ea86211c06c85d4fad17cb585ca57d2, type: 3}
+  m_Name: NPCVisual 2
+  m_EditorClassIdentifier: 
+  spriteIdle: {fileID: 0}
+  spriteUp: {fileID: 0}
+  spriteDown: {fileID: 0}
+  spriteLeft: {fileID: 0}
+  spriteRight: {fileID: 0}
+  spriteBow: {fileID: 0}
+  spriteJump: {fileID: 0}
+  spriteSitDown: {fileID: 0}
+  spriteWave: {fileID: 0}
+  spriteLaugh: {fileID: 0}
+  spriteAngry: {fileID: 0}
