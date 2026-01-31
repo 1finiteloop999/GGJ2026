@@ -30,6 +30,12 @@ public class DeckManager : MonoBehaviour
     [SerializeField] private RectTransform sellArea;
     [SerializeField] private RectTransform useArea;
 
+    [Header("区域UI（可选）")]
+    [Tooltip("出售区域UI组件")]
+    [SerializeField] private DropAreaUI sellAreaUI;
+    [Tooltip("使用区域UI组件")]
+    [SerializeField] private DropAreaUI useAreaUI;
+
     [Header("初始牌库")]
     [SerializeField] private List<CardData> initialCards = new List<CardData>();
 
@@ -482,9 +488,9 @@ public class DeckManager : MonoBehaviour
     /// <summary>
     /// 尝试将卡牌返回手牌
     /// </summary>
-    public void TryReturnCardToHand(CardUI card)
+    public bool TryReturnCardToHand(CardUI card)
     {
-        if (card == null) return;
+        if (card == null) return false;
 
         // 返回手牌（无上限）
         card.SetParentAndReset(handContainer);
@@ -492,7 +498,12 @@ public class DeckManager : MonoBehaviour
         {
             handCards.Add(card);
         }
+
+        // 更新手牌布局
+        UpdateHandLayout();
+
         Debug.Log("卡牌返回手牌");
+        return true;
     }
 
     #endregion
@@ -523,6 +534,9 @@ public class DeckManager : MonoBehaviour
         handCards.Remove(card);
         Destroy(card.gameObject);
 
+        // 播放成功音效并重置区域状态
+        sellAreaUI?.OnOperationSuccess();
+
         OnCardSold?.Invoke(card);
     }
 
@@ -547,6 +561,9 @@ public class DeckManager : MonoBehaviour
 
         handCards.Remove(card);
         Destroy(card.gameObject);
+
+        // 播放成功音效并重置区域状态
+        useAreaUI?.OnOperationSuccess();
 
         OnCardUsed?.Invoke(card);
     }

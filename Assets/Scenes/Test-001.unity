@@ -335,6 +335,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!1 &150093215
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,6 +553,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!1 &207242786
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,6 +1574,8 @@ MonoBehaviour:
   minSpacing: -80
   sellArea: {fileID: 1156282232}
   useArea: {fileID: 1567405953}
+  sellAreaUI: {fileID: 0}
+  useAreaUI: {fileID: 0}
   initialCards: []
 --- !u!4 &648312369
 Transform:
@@ -2318,6 +2324,7 @@ GameObject:
   - component: {fileID: 1156282232}
   - component: {fileID: 1156282234}
   - component: {fileID: 1156282233}
+  - component: {fileID: 1156282235}
   m_Layer: 5
   m_Name: SellArea
   m_TagString: Untagged
@@ -2383,6 +2390,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1156282231}
   m_CullTransparentMesh: 1
+--- !u!114 &1156282235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156282231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82fd1c7267595b489a58169cb08ae0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  areaType: 0
+  areaImage: {fileID: 0}
+  normalSprite: {fileID: 0}
+  activeSprite: {fileID: 0}
+  successSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!1 &1167790272
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,6 +2503,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!1 &1169853895
 GameObject:
   m_ObjectHideFlags: 0
@@ -2572,6 +2599,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!114 &1199533037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3436,6 +3465,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!1 &1567405952
 GameObject:
   m_ObjectHideFlags: 0
@@ -4108,6 +4139,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!114 &1837583882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4749,6 +4782,8 @@ MonoBehaviour:
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
+  stackHighlightColor: {r: 0.8, g: 0.8, b: 0.3, a: 0.7}
+  stackOffsetY: -30
 --- !u!114 &2015847488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4889,6 +4924,7 @@ MonoBehaviour:
   tipText: {fileID: 706586377}
   cardPrefab: {fileID: 914349447506620382, guid: 596e6c3d485f3494ab1cb262edc023a0, type: 3}
   handContainer: {fileID: 1343388620}
+  handContainerOriginalWidth: 0
   animationDuration: 0.3
   handShrinkAmount: 420
   displayCount: 3

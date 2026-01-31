@@ -475,17 +475,8 @@ public class GameManager : MonoBehaviour
         // 获取玩家卡牌序列
         List<CardData> playerCards = SlotManager.Instance?.GetSlotCards() ?? new List<CardData>();
 
-        // 计算分数
-        CompareResult result;
-        if (ScoreCalculator.Instance != null)
-        {
-            result = ScoreCalculator.Instance.CalculateScore(npcCards, playerCards, currentLevel);
-        }
-        else
-        {
-            // 手动计算（备用）
-            result = CalculateScoreManually(npcCards, playerCards);
-        }
+        // 计算分数（包含叠加加分）
+        CompareResult result = CalculateScoreWithStack(npcCards, playerCards);
 
         LastScoreResult = result;
 
@@ -499,13 +490,12 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 手动计算分数（备用方法）
+    /// 计算分数（包含叠加加分）
     /// </summary>
-    private CompareResult CalculateScoreManually(List<CardData> npcCards, List<CardData> playerCards)
+    private CompareResult CalculateScoreWithStack(List<CardData> npcCards, List<CardData> playerCards)
     {
         CompareResult result = new CompareResult();
 
-        int maxSteps = Mathf.Max(npcCards.Count, playerCards.Count);
         result.totalSteps = npcCards.Count;
 
         // 计算满分
@@ -517,19 +507,34 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 逐步对比
-        for (int i = 0; i < maxSteps; i++)
+        // 获取所有卡槽
+        var orderedSlots = SlotManager.Instance?.GetOrderedSlots() ?? new List<CardSlot>();
+
+        // 逐个卡槽计算得分
+        for (int i = 0; i < orderedSlots.Count && i < npcCards.Count; i++)
         {
-            CardData npcCard = i < npcCards.Count ? npcCards[i] : null;
-            CardData playerCard = i < playerCards.Count ? playerCards[i] : null;
+            CardSlot slot = orderedSlots[i];
+            CardData npcCard = npcCards[i];
+            CardData playerCard = slot.CurrentCard?.CardData;
 
             StepCompareResult stepResult = new StepCompareResult(i, npcCard, playerCard);
             result.stepResults.Add(stepResult);
 
             if (stepResult.isCorrect)
             {
-                result.totalScore += stepResult.scoreGained;
+                // 基础分数
+                int baseScore = stepResult.scoreGained;
+
+                // 叠加加分
+                int stackBonus = slot.StackCount;
+
+                result.totalScore += baseScore + stackBonus;
                 result.correctCount++;
+
+                if (stackBonus > 0)
+                {
+                    Debug.Log($"[GameManager] 卡槽{i}: 基础分{baseScore} + 叠加加分{stackBonus}");
+                }
             }
         }
 

@@ -38,6 +38,9 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
     // 当前所在的卡槽（如果有）
     public CardSlot CurrentSlot { get; set; }
 
+    // 在卡槽中的堆叠索引（-1表示不在堆栈中，0是底牌，1+是叠加牌）
+    public int StackIndex { get; set; } = -1;
+
     // 是否来自牌库展示区
     public bool IsFromDeckShop { get; set; } = false;
 
@@ -100,9 +103,19 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         // 记录之前所在的卡槽
         previousSlot = CurrentSlot;
 
-        // 如果从卡槽中拖出，先清除卡槽状态
+        // 如果在卡槽中，检查是否是最顶部的卡牌
         if (CurrentSlot != null)
         {
+            CardUI topCard = CurrentSlot.GetTopCard();
+            if (topCard != this)
+            {
+                // 不是最顶部的卡牌，取消拖拽
+                Debug.Log("[CardUI] 只能拖拽最顶部的卡牌！");
+                isDragging = false;
+                return;
+            }
+
+            // 从卡槽中移除
             CurrentSlot.RemoveCard();
         }
 
@@ -161,8 +174,24 @@ public class CardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
             if (!handled)
             {
-                // 没有放到有效位置，尝试返回手牌
-                DeckManager.Instance?.TryReturnCardToHand(this);
+                // 没有放到有效位置，直接返回手牌
+                bool returnedToHand = DeckManager.Instance?.TryReturnCardToHand(this) ?? false;
+
+                if (!returnedToHand)
+                {
+                    // 如果也无法返回手牌，尝试返回原卡槽
+                    if (previousSlot != null)
+                    {
+                        if (previousSlot.IsEmpty)
+                        {
+                            previousSlot.PlaceCard(this);
+                        }
+                        else if (previousSlot.CanStackCardUI(this))
+                        {
+                            previousSlot.StackCard(this);
+                        }
+                    }
+                }
             }
         }
 
