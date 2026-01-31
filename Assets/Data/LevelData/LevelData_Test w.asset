@@ -12,12 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0525aa14c55cdf14f9b74674911e21ae, type: 3}
   m_Name: LevelData_Test w
   m_EditorClassIdentifier: 
-  levelName: Test_w
+  levelName: Test_w001
   levelIndex: 0
   startingPoints: 10
-  playerStartPosition: {x: 2, y: 2}
-  npcStartPosition: {x: 4, y: 4}
-  npcCardSequence: []
+  playerStartPosition: {x: 3, y: 2}
+  npcStartPosition: {x: 1, y: 1}
+  npcCardSequence:
+  - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
+  - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}
+  - {fileID: 11400000, guid: 3675b768020cd004a817c0845db4ffb8, type: 2}
+  - {fileID: 11400000, guid: 61f3df6ef157bb84ab025d4bf33ffe46, type: 2}
+  - {fileID: 11400000, guid: 4ca3752d12a255d4fb67cbcdde81e4c0, type: 2}
+  - {fileID: 11400000, guid: 979f8f886dec95d4bbe88699a08673fc, type: 2}
+  - {fileID: 11400000, guid: 202421fd066c18a41bf68c7e6cd40b19, type: 2}
   scoreA: 11
   scoreS: 14
   scoreSS: 17
@@ -28,6 +35,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
   - {fileID: 11400000, guid: 9ddb59b4f413eaf438e8bee6db155a46, type: 2}
   - {fileID: 11400000, guid: 61f3df6ef157bb84ab025d4bf33ffe46, type: 2}
-  deckCards: []
+  deckCards:
+  - {fileID: 11400000, guid: 7f51d9c71249f8447b1a297da23df8e5, type: 2}
+  - {fileID: 11400000, guid: 64e66b6832edfab49b6d82a2b6a3c330, type: 2}
+  - {fileID: 11400000, guid: 979f8f886dec95d4bbe88699a08673fc, type: 2}
+  - {fileID: 11400000, guid: 202421fd066c18a41bf68c7e6cd40b19, type: 2}
+  - {fileID: 11400000, guid: b5463e0d2a154d34d863eb28ae15979c, type: 2}
+  - {fileID: 11400000, guid: c638a4c1afad90d4cb9a9cbdc82d0086, type: 2}
+  - {fileID: 11400000, guid: 4ca3752d12a255d4fb67cbcdde81e4c0, type: 2}
+  - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}
+  - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
   deckDisplayCount: 3
   slotCount: 7
