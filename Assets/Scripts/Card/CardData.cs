@@ -50,7 +50,11 @@ public class CardData : ScriptableObject
     [Tooltip("卡牌背景颜色")]
     public Color cardColor = Color.white;
 
-    [Header("===== 卡牌效果 =====")]
+    [Header("===== 卡牌类型 =====")]
+    [Tooltip("是否为法术牌（法术牌只能拖入USE区域使用）")]
+    public bool isSpellCard = false;
+
+    [Header("===== 行动牌效果 =====")]
 
     [Header("1. 方向（仅管理转向）")]
     [Tooltip("移动方向，None表示不改变方向")]
@@ -73,6 +77,18 @@ public class CardData : ScriptableObject
     [Tooltip("表情类型，None表示无表情")]
     public ExpressionType expressionType = ExpressionType.None;
 
+    [Header("===== 法术牌效果 =====")]
+    [Tooltip("使用后获得的点数（0-4）")]
+    [Range(0, 4)]
+    public int spellGainPoints = 0;
+
+    [Tooltip("使用后是否让NPC重走一次路径")]
+    public bool spellReplayNPC = false;
+
+    [Tooltip("使用后随机增加的手牌数量（0-3）")]
+    [Range(0, 3)]
+    public int spellAddCards = 0;
+
     [Header("===== 价值与经济 =====")]
     [Tooltip("卡牌价值点数（用于计算得分）")]
     public int valuePoints = 2;
@@ -88,6 +104,12 @@ public class CardData : ScriptableObject
     /// </summary>
     public string GetDescription()
     {
+        // 法术牌
+        if (isSpellCard)
+        {
+            return GetSpellDescription();
+        }
+
         // 停顿卡
         if (isPause)
         {
@@ -155,10 +177,43 @@ public class CardData : ScriptableObject
     }
 
     /// <summary>
+    /// 获取法术牌描述
+    /// </summary>
+    private string GetSpellDescription()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        if (spellGainPoints > 0)
+        {
+            sb.Append($"+{spellGainPoints}点");
+        }
+
+        if (spellReplayNPC)
+        {
+            if (sb.Length > 0) sb.Append(" ");
+            sb.Append("重播NPC");
+        }
+
+        if (spellAddCards > 0)
+        {
+            if (sb.Length > 0) sb.Append(" ");
+            sb.Append($"+{spellAddCards}牌");
+        }
+
+        return sb.Length > 0 ? sb.ToString() : "法术";
+    }
+
+    /// <summary>
     /// 获取用于比较的唯一标识
     /// </summary>
     public string GetCompareKey()
     {
+        // 法术牌不参与比较
+        if (isSpellCard)
+        {
+            return "SPELL_" + cardName;
+        }
+
         // 停顿卡
         if (isPause)
         {
@@ -198,32 +253,52 @@ public class CardData : ScriptableObject
     }
 
     /// <summary>
+    /// 是否是法术牌
+    /// </summary>
+    public bool IsSpellCard => isSpellCard;
+
+    /// <summary>
+    /// 是否是行动牌（非法术牌）
+    /// </summary>
+    public bool IsActionTypeCard => !isSpellCard;
+
+    /// <summary>
     /// 是否是纯方向卡
     /// </summary>
-    public bool IsDirectionCard => direction != DirectionType.None && stepCount == 0 && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
+    public bool IsDirectionCard => !isSpellCard && direction != DirectionType.None && stepCount == 0 && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
 
     /// <summary>
     /// 是否是纯步数卡
     /// </summary>
-    public bool IsStepCard => stepCount > 0 && direction == DirectionType.None && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
+    public bool IsStepCard => !isSpellCard && stepCount > 0 && direction == DirectionType.None && !isPause && actionType == ActionType.None && expressionType == ExpressionType.None;
 
     /// <summary>
     /// 是否是停顿卡
     /// </summary>
-    public bool IsPauseCard => isPause;
+    public bool IsPauseCard => !isSpellCard && isPause;
 
     /// <summary>
     /// 是否是动作卡
     /// </summary>
-    public bool IsActionCard => actionType != ActionType.None;
+    public bool IsActionCard => !isSpellCard && actionType != ActionType.None;
 
     /// <summary>
     /// 是否是表情卡
     /// </summary>
-    public bool IsExpressionCard => expressionType != ExpressionType.None;
+    public bool IsExpressionCard => !isSpellCard && expressionType != ExpressionType.None;
 
     /// <summary>
     /// 是否会产生移动
     /// </summary>
-    public bool HasMovement => direction != DirectionType.None || stepCount > 0;
+    public bool HasMovement => !isSpellCard && (direction != DirectionType.None || stepCount > 0);
+
+    /// <summary>
+    /// 是否可以放入卡槽（行动牌可以，法术牌不可以）
+    /// </summary>
+    public bool CanPlaceInSlot => !isSpellCard;
+
+    /// <summary>
+    /// 是否可以拖入USE区域使用（法术牌可以，行动牌不可以）
+    /// </summary>
+    public bool CanUseDirectly => isSpellCard;
 }

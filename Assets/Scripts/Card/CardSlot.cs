@@ -75,6 +75,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     {
         if (cardData == null) return false;
 
+        // 法术牌不能放入卡槽
+        if (cardData.IsSpellCard) return false;
+
         switch (slotType)
         {
             case SlotType.Direction:

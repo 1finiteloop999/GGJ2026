@@ -433,17 +433,22 @@ public class DeckShop : MonoBehaviour
         }
 
         CardData cardData = cardUI.CardData;
+        int cost = 0;
 
-        // 检查点数是否足够
-        int cost = cardData.buyCost;
-        if (DeckManager.Instance != null && DeckManager.Instance.CurrentPoints < cost)
+        // 法术牌不消耗点数
+        if (!cardData.IsSpellCard)
         {
-            ShowTip("Not enough points!");
-            return false;
-        }
+            // 检查点数是否足够
+            cost = cardData.buyCost;
+            if (DeckManager.Instance != null && DeckManager.Instance.CurrentPoints < cost)
+            {
+                ShowTip("Not enough points!");
+                return false;
+            }
 
-        // 扣除点数
-        DeckManager.Instance?.ModifyPoints(-cost);
+            // 扣除点数
+            DeckManager.Instance?.ModifyPoints(-cost);
+        }
 
         // 从展示列表中移除
         currentDisplayCards.Remove(cardData);
@@ -458,7 +463,14 @@ public class DeckShop : MonoBehaviour
         // 更新手牌间距
         UpdateHandSpacing();
 
-        Debug.Log($"[DeckShop] 购买卡牌: {cardData.cardName}，花费 {cost} 点数");
+        if (cardData.IsSpellCard)
+        {
+            Debug.Log($"[DeckShop] 获得法术牌: {cardData.cardName}（免费）");
+        }
+        else
+        {
+            Debug.Log($"[DeckShop] 购买卡牌: {cardData.cardName}，花费 {cost} 点数");
+        }
 
         // 如果展示区空了且牌库也空了，显示提示并收起
         if (currentDisplayCards.Count == 0 && availableDeck.Count == 0)
