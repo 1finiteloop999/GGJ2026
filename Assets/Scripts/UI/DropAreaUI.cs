@@ -81,8 +81,8 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         switch (areaType)
         {
             case DropAreaType.Sell:
-                // 出售区域：不接受法术牌
-                return !cardData.IsSpellCard;
+                // 出售区域：所有卡牌都可以出售
+                return true;
 
             case DropAreaType.Use:
                 // 使用区域：只接受法术牌

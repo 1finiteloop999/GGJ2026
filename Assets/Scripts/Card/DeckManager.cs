@@ -350,16 +350,9 @@ public class DeckManager : MonoBehaviour
 
         CardData cardData = card.CardData;
 
-        // 检查是否拖到了出售区域
+        // 检查是否拖到了出售区域（所有卡牌都可以出售）
         if (sellArea != null && RectTransformUtility.RectangleContainsScreenPoint(sellArea, eventData.position))
         {
-            // 法术牌不能出售（不获得点数）
-            if (cardData != null && cardData.IsSpellCard)
-            {
-                Debug.Log("[DeckManager] 法术牌不能出售");
-                return false;
-            }
-
             SellCard(card);
             return true;
         }
@@ -517,13 +510,6 @@ public class DeckManager : MonoBehaviour
         if (card.CurrentSlot != null)
         {
             card.CurrentSlot.RemoveCard();
-        }
-
-        // 法术牌不能出售（不获得点数）
-        if (card.CardData != null && card.CardData.IsSpellCard)
-        {
-            Debug.Log($"[DeckManager] 法术牌不能出售: {card.CardData.cardName}");
-            return;
         }
 
         // 出售获得点数（使用CardData中的sellValue）
