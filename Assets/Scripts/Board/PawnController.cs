@@ -426,7 +426,21 @@ public class PawnController : MonoBehaviour
     private IEnumerator PerformPause()
     {
         Debug.Log("[Pawn] 执行停顿");
+
+        // 显示停顿图标
+        if (spriteRenderer != null && visualData != null)
+        {
+            Sprite pauseSprite = visualData.GetPauseSprite();
+            if (pauseSprite != null)
+            {
+                spriteRenderer.sprite = pauseSprite;
+            }
+        }
+
         yield return new WaitForSeconds(pauseDuration);
+
+        // 恢复默认图标
+        ResetToIdle();
     }
 
     /// <summary>

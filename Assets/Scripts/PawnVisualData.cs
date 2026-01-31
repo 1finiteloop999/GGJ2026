@@ -9,7 +9,7 @@ public class PawnVisualData : ScriptableObject
     [Header("===== 基本图标 =====")]
     [Tooltip("默认/待机图标")]
     public Sprite spriteIdle;
-    
+
     [Header("方向图标（可选，用于显示朝向）")]
     [Tooltip("朝上图标")]
     public Sprite spriteUp;
@@ -19,7 +19,7 @@ public class PawnVisualData : ScriptableObject
     public Sprite spriteLeft;
     [Tooltip("朝右图标")]
     public Sprite spriteRight;
-    
+
     [Header("===== 动作图标 =====")]
     [Tooltip("鞠躬图标")]
     public Sprite spriteBow;
@@ -29,13 +29,15 @@ public class PawnVisualData : ScriptableObject
     public Sprite spriteSitDown;
     [Tooltip("招手图标")]
     public Sprite spriteWave;
-    
+    [Tooltip("停顿图标")]
+    public Sprite spritePause;
+
     [Header("===== 表情图标 =====")]
     [Tooltip("笑图标")]
     public Sprite spriteLaugh;
     [Tooltip("愤怒图标")]
     public Sprite spriteAngry;
-    
+
     /// <summary>
     /// 获取方向对应的图标
     /// </summary>
@@ -49,11 +51,11 @@ public class PawnVisualData : ScriptableObject
             DirectionType.Right => spriteRight,
             _ => null
         };
-        
+
         // 如果没有对应方向图标，返回默认图标
         return result != null ? result : spriteIdle;
     }
-    
+
     /// <summary>
     /// 获取动作对应的图标
     /// </summary>
@@ -68,7 +70,7 @@ public class PawnVisualData : ScriptableObject
             _ => null
         };
     }
-    
+
     /// <summary>
     /// 获取表情对应的图标
     /// </summary>
@@ -80,5 +82,13 @@ public class PawnVisualData : ScriptableObject
             ExpressionType.Angry => spriteAngry,
             _ => null
         };
+    }
+
+    /// <summary>
+    /// 获取停顿图标
+    /// </summary>
+    public Sprite GetPauseSprite()
+    {
+        return spritePause != null ? spritePause : spriteIdle;
     }
 }
