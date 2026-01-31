@@ -9,7 +9,14 @@ public class SlotManager : MonoBehaviour
 {
     public static SlotManager Instance { get; private set; }
 
-    [Header("卡槽列表")]
+    [Header("卡槽设置")]
+    [Tooltip("卡槽容器（卡槽的父物体）")]
+    [SerializeField] private Transform slotContainer;
+
+    [Tooltip("卡槽预制体")]
+    [SerializeField] private GameObject slotPrefab;
+
+    [Header("卡槽列表（自动填充）")]
     [SerializeField] private List<CardSlot> slots = new List<CardSlot>();
 
     [Header("路径预览")]
@@ -34,48 +41,110 @@ public class SlotManager : MonoBehaviour
 
     private void Start()
     {
-        InitializeSlots();
         SetupPathPreview();
     }
 
     /// <summary>
-    /// 初始化卡槽列表
+    /// 根据关卡配置初始化卡槽
     /// </summary>
-    private void InitializeSlots()
+    public void InitializeFromLevelData(LevelData levelData)
     {
-        // 如果没有手动设置，自动查找
-        if (slots == null || slots.Count == 0)
+        if (levelData == null || levelData.slotConfigs == null)
         {
-            // 先尝试从子物体查找
-            slots = GetComponentsInChildren<CardSlot>(true).ToList();
-
-            // 如果还是没有，尝试从整个场景查找
-            if (slots.Count == 0)
-            {
-                slots = Object.FindObjectsByType<CardSlot>(FindObjectsSortMode.None).ToList();
-            }
+            Debug.LogError("[SlotManager] LevelData 或 slotConfigs 为空！");
+            return;
         }
 
-        // 移除空引用
-        slots.RemoveAll(s => s == null);
+        // 清除现有卡槽
+        ClearAllSlots();
+        foreach (var slot in slots)
+        {
+            if (slot != null)
+            {
+                Destroy(slot.gameObject);
+            }
+        }
+        slots.Clear();
 
-        // 按SlotIndex排序确保顺序正确
+        // 根据配置创建卡槽
+        foreach (var config in levelData.slotConfigs)
+        {
+            CreateSlot(config.slotIndex, config.slotType);
+        }
+
+        // 按编号排序
         slots = slots.OrderBy(s => s.SlotIndex).ToList();
 
-        Debug.Log($"[SlotManager] 初始化完成，共 {slots.Count} 个卡槽");
+        Debug.Log($"[SlotManager] 从关卡配置初始化，共创建 {slots.Count} 个卡槽");
+    }
 
+    /// <summary>
+    /// 创建一个卡槽
+    /// </summary>
+    private CardSlot CreateSlot(int index, SlotType type)
+    {
+        if (slotPrefab == null)
+        {
+            Debug.LogError("[SlotManager] 缺少卡槽预制体！");
+            return null;
+        }
+
+        Transform parent = slotContainer != null ? slotContainer : transform;
+        GameObject slotObj = Instantiate(slotPrefab, parent);
+        slotObj.name = $"Slot_{index}_{type}";
+
+        CardSlot slot = slotObj.GetComponent<CardSlot>();
+        if (slot != null)
+        {
+            slot.SetSlotIndex(index);
+            slot.SetSlotType(type);
+            slots.Add(slot);
+            Debug.Log($"[SlotManager] 创建卡槽: 编号={index}, 类型={type}");
+        }
+
+        return slot;
+    }
+
+    /// <summary>
+    /// 手动注册卡槽（场景中已有的卡槽）
+    /// </summary>
+    public void RegisterSlots(List<CardSlot> existingSlots)
+    {
+        slots.Clear();
+        if (existingSlots != null)
+        {
+            slots.AddRange(existingSlots);
+            slots = slots.OrderBy(s => s.SlotIndex).ToList();
+        }
+        Debug.Log($"[SlotManager] 注册了 {slots.Count} 个卡槽");
+    }
+
+    /// <summary>
+    /// 自动查找场景中的卡槽
+    /// </summary>
+    public void FindSlotsInScene()
+    {
+        slots.Clear();
+
+        // 先尝试从容器查找
+        if (slotContainer != null)
+        {
+            slots = slotContainer.GetComponentsInChildren<CardSlot>(true).ToList();
+        }
+
+        // 如果没有容器或容器中没有，从整个场景查找
         if (slots.Count == 0)
         {
-            Debug.LogError("[SlotManager] 警告：没有找到任何卡槽！请检查：\n" +
-                "1. 卡槽对象是否添加了CardSlot脚本\n" +
-                "2. 卡槽是否是SlotManager的子物体，或手动拖入Slots列表");
+            slots = Object.FindObjectsByType<CardSlot>(FindObjectsSortMode.None).ToList();
         }
-        else
+
+        // 按SlotIndex排序
+        slots = slots.OrderBy(s => s.SlotIndex).ToList();
+
+        Debug.Log($"[SlotManager] 找到 {slots.Count} 个卡槽");
+        foreach (var slot in slots)
         {
-            foreach (var slot in slots)
-            {
-                Debug.Log($"[SlotManager] 卡槽 {slot.SlotIndex}: {slot.name}");
-            }
+            Debug.Log($"  - 卡槽 {slot.SlotIndex}: {slot.name} ({slot.Type})");
         }
     }
 
@@ -84,7 +153,7 @@ public class SlotManager : MonoBehaviour
     /// </summary>
     public void RefreshSlots()
     {
-        InitializeSlots();
+        FindSlotsInScene();
     }
 
     [Header("NPC路径预览")]
@@ -269,23 +338,34 @@ public class SlotManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 获取当前所有卡槽中的卡牌（按顺序）
+    /// 获取当前所有卡槽中的卡牌（按编号顺序）
     /// </summary>
     public List<CardData> GetSlotCards()
     {
         List<CardData> cards = new List<CardData>();
 
-        foreach (var slot in slots)
+        // 确保按编号顺序
+        var orderedSlots = slots.OrderBy(s => s.SlotIndex).ToList();
+
+        foreach (var slot in orderedSlots)
         {
             if (slot != null && !slot.IsEmpty && slot.CurrentCard != null && slot.CurrentCard.CardData != null)
             {
                 cards.Add(slot.CurrentCard.CardData);
-                Debug.Log($"[SlotManager] 卡槽{slot.SlotIndex}: {slot.CurrentCard.CardData.GetDescription()}");
+                Debug.Log($"[SlotManager] 卡槽{slot.SlotIndex}({slot.Type}): {slot.CurrentCard.CardData.GetDescription()}");
             }
         }
 
-        Debug.Log($"[SlotManager] 共获取 {cards.Count} 张卡牌");
+        Debug.Log($"[SlotManager] 按编号顺序获取 {cards.Count} 张卡牌");
         return cards;
+    }
+
+    /// <summary>
+    /// 获取所有卡槽（按编号顺序）
+    /// </summary>
+    public List<CardSlot> GetOrderedSlots()
+    {
+        return slots.OrderBy(s => s.SlotIndex).ToList();
     }
 
     /// <summary>
