@@ -3454,8 +3454,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 7379550689782283689, guid: 569dac0b3c002457f9a050a5b14ae391, type: 3}
-  m_Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+  m_Sprite: {fileID: -8307496420433349779, guid: 8a66b6b8bee804dbe84aaca115091f4c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3514,7 +3514,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -37, y: 90}
+  m_AnchoredPosition: {x: -35, y: -166.28}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1482762687
@@ -3819,10 +3819,10 @@ MonoBehaviour:
   visualData: {fileID: 11400000, guid: a0ad2148a8ed2d7458dd05c3964c9214, type: 2}
   defaultSprite: {fileID: 0}
   pawnColor: {r: 0, g: 0.30584526, b: 1, a: 1}
-  moveSpeed: 5
+  moveSpeed: 2
   scaleRatio: 0.8
-  actionDuration: 1
-  pauseDuration: 0.5
+  actionDuration: 2
+  pauseDuration: 2
   gridPosition: {x: 0, y: 0}
 --- !u!4 &1583926846
 Transform:
