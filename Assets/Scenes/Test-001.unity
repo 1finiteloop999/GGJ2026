@@ -1574,7 +1574,7 @@ MonoBehaviour:
   minSpacing: -80
   sellArea: {fileID: 1156282232}
   useArea: {fileID: 1567405953}
-  sellAreaUI: {fileID: 0}
+  sellAreaUI: {fileID: 1156282235}
   useAreaUI: {fileID: 0}
   initialCards: []
 --- !u!4 &648312369
@@ -1651,7 +1651,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: The deck is empty
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1717,7 +1717,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &706586378
@@ -3293,8 +3293,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 3
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2346b59606c80f44fbddedc5de519163, type: 2}
-  m_sharedMaterial: {fileID: 7890088427119759273, guid: 2346b59606c80f44fbddedc5de519163, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
+  m_sharedMaterial: {fileID: -3518845147947877407, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3654,8 +3654,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: USE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
+  m_sharedMaterial: {fileID: -3518845147947877407, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4510,8 +4510,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: sell
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
+  m_sharedMaterial: {fileID: -3518845147947877407, guid: 86811ec1ee723704e92769f0acf386ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

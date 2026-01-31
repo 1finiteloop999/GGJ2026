@@ -3,55 +3,55 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// ÍÏ·ÅÇøÓòÀàĞÍ
+/// æ‹–æ”¾åŒºåŸŸç±»å‹
 /// </summary>
 public enum DropAreaType
 {
-    Sell,   // ³öÊÛÇøÓò
-    Use     // Ê¹ÓÃÇøÓò
+    Sell,   // å‡ºå”®åŒºåŸŸ
+    Use     // ä½¿ç”¨åŒºåŸŸ
 }
 
 /// <summary>
-/// ÍÏ·ÅÇøÓòUI - ¹ÜÀíSellºÍUseÇøÓòµÄÍ¼Æ¬×´Ì¬ÇĞ»»ºÍÒôĞ§
+/// æ‹–æ”¾åŒºåŸŸUI - ç®¡ç†Sellå’ŒUseåŒºåŸŸçš„å›¾ç‰‡çŠ¶æ€åˆ‡æ¢å’ŒéŸ³æ•ˆ
 /// </summary>
 public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("ÇøÓòÉèÖÃ")]
-    [Tooltip("ÇøÓòÀàĞÍ")]
+    [Header("åŒºåŸŸè®¾ç½®")]
+    [Tooltip("åŒºåŸŸç±»å‹")]
     [SerializeField] private DropAreaType areaType = DropAreaType.Sell;
 
-    [Header("Í¼Æ¬ÉèÖÃ")]
-    [Tooltip("ÇøÓòÍ¼Æ¬×é¼ş")]
+    [Header("å›¾ç‰‡è®¾ç½®")]
+    [Tooltip("åŒºåŸŸå›¾ç‰‡ç»„ä»¶")]
     [SerializeField] private Image areaImage;
 
-    [Tooltip("Ä¬ÈÏ×´Ì¬Í¼Æ¬")]
+    [Tooltip("é»˜è®¤çŠ¶æ€å›¾ç‰‡")]
     [SerializeField] private Sprite normalSprite;
 
-    [Tooltip("¼¤»î×´Ì¬Í¼Æ¬£¨¿É·ÅÈëÊ±£©")]
+    [Tooltip("æ¿€æ´»çŠ¶æ€å›¾ç‰‡ï¼ˆå¯æ”¾å…¥æ—¶ï¼‰")]
     [SerializeField] private Sprite activeSprite;
 
-    [Header("ÒôĞ§ÉèÖÃ")]
-    [Tooltip("³É¹¦²Ù×÷ÒôĞ§")]
+    [Header("éŸ³æ•ˆè®¾ç½®")]
+    [Tooltip("æˆåŠŸæ“ä½œéŸ³æ•ˆ")]
     [SerializeField] private AudioClip successSound;
 
-    [Tooltip("ÒôĞ§²¥·ÅÆ÷£¨¿ÉÑ¡£¬Èç¹ûÎª¿ÕÔò×Ô¶¯²éÕÒ»ò´´½¨£©")]
+    [Tooltip("éŸ³æ•ˆæ’­æ”¾å™¨ï¼ˆå¯é€‰ï¼Œå¦‚æœä¸ºç©ºåˆ™è‡ªåŠ¨æŸ¥æ‰¾æˆ–åˆ›å»ºï¼‰")]
     [SerializeField] private AudioSource audioSource;
 
-    // µ±Ç°ÊÇ·ñ´¦ÓÚ¼¤»î×´Ì¬
+    // å½“å‰æ˜¯å¦å¤„äºæ¿€æ´»çŠ¶æ€
     private bool isActive = false;
 
-    // µ±Ç°ĞüÍ£µÄ¿¨ÅÆ
+    // å½“å‰æ‚¬åœçš„å¡ç‰Œ
     private CardUI hoveringCard = null;
 
     private void Awake()
     {
-        // ×Ô¶¯»ñÈ¡Image×é¼ş
+        // è‡ªåŠ¨è·å–Imageç»„ä»¶
         if (areaImage == null)
         {
             areaImage = GetComponent<Image>();
         }
 
-        // È·±£ÓĞAudioSource
+        // ç¡®ä¿æœ‰AudioSource
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
@@ -65,12 +65,12 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void Start()
     {
-        // ÉèÖÃÄ¬ÈÏÍ¼Æ¬
+        // è®¾ç½®é»˜è®¤å›¾ç‰‡
         SetNormalState();
     }
 
     /// <summary>
-    /// ¼ì²é¿¨ÅÆÊÇ·ñ¿ÉÒÔ·ÅÈë´ËÇøÓò
+    /// æ£€æŸ¥å¡ç‰Œæ˜¯å¦å¯ä»¥æ”¾å…¥æ­¤åŒºåŸŸ
     /// </summary>
     private bool CanAcceptCard(CardUI card)
     {
@@ -81,11 +81,11 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         switch (areaType)
         {
             case DropAreaType.Sell:
-                // ³öÊÛÇøÓò£ºËùÓĞ¿¨ÅÆ¶¼¿ÉÒÔ³öÊÛ
+                // å‡ºå”®åŒºåŸŸï¼šæ‰€æœ‰å¡ç‰Œéƒ½å¯ä»¥å‡ºå”®
                 return true;
 
             case DropAreaType.Use:
-                // Ê¹ÓÃÇøÓò£ºÖ»½ÓÊÜ·¨ÊõÅÆ
+                // ä½¿ç”¨åŒºåŸŸï¼šåªæ¥å—æ³•æœ¯ç‰Œ
                 return cardData.IsSpellCard;
 
             default:
@@ -94,7 +94,7 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     /// <summary>
-    /// ÉèÖÃÎªÄ¬ÈÏ×´Ì¬
+    /// è®¾ç½®ä¸ºé»˜è®¤çŠ¶æ€
     /// </summary>
     public void SetNormalState()
     {
@@ -108,7 +108,7 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     /// <summary>
-    /// ÉèÖÃÎª¼¤»î×´Ì¬
+    /// è®¾ç½®ä¸ºæ¿€æ´»çŠ¶æ€
     /// </summary>
     public void SetActiveState()
     {
@@ -121,7 +121,7 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     /// <summary>
-    /// ²¥·Å³É¹¦ÒôĞ§
+    /// æ’­æ”¾æˆåŠŸéŸ³æ•ˆ
     /// </summary>
     public void PlaySuccessSound()
     {
@@ -131,11 +131,11 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         }
     }
 
-    #region Ö¸ÕëÊÂ¼ş
+    #region æŒ‡é’ˆäº‹ä»¶
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // ¼ì²éÊÇ·ñÓĞ¿¨ÅÆÕıÔÚÍÏ×§
+        // æ£€æŸ¥æ˜¯å¦æœ‰å¡ç‰Œæ­£åœ¨æ‹–æ‹½
         if (eventData.pointerDrag != null)
         {
             CardUI draggedCard = eventData.pointerDrag.GetComponent<CardUI>();
@@ -150,14 +150,14 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // »Ö¸´Ä¬ÈÏ×´Ì¬
+        // æ¢å¤é»˜è®¤çŠ¶æ€
         SetNormalState();
     }
 
     #endregion
 
     /// <summary>
-    /// Í¨Öª²Ù×÷³É¹¦£¨ÓÉDeckManagerµ÷ÓÃ£©
+    /// é€šçŸ¥æ“ä½œæˆåŠŸï¼ˆç”±DeckManagerè°ƒç”¨ï¼‰
     /// </summary>
     public void OnOperationSuccess()
     {
@@ -166,7 +166,7 @@ public class DropAreaUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     /// <summary>
-    /// »ñÈ¡ÇøÓòÀàĞÍ
+    /// è·å–åŒºåŸŸç±»å‹
     /// </summary>
     public DropAreaType AreaType => areaType;
 }

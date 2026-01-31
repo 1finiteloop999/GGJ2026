@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// ·¨ÊõÅÆ¹ÜÀíÆ÷ - ´¦Àí·¨ÊõÅÆµÄÊ¹ÓÃĞ§¹û
+/// æ³•æœ¯ç‰Œç®¡ç†å™¨ - å¤„ç†æ³•æœ¯ç‰Œçš„ä½¿ç”¨æ•ˆæœ
 /// </summary>
 public class SpellManager : MonoBehaviour
 {
     public static SpellManager Instance { get; private set; }
 
-    [Header("Ëæ»ú³é¿¨À´Ô´")]
-    [Tooltip("Ëæ»ú³é¿¨µÄ¿¨³Ø£¨Í¨³£ÊÇµ±Ç°¹Ø¿¨µÄÅÆ¿â£©")]
+    [Header("éšæœºæŠ½å¡æ¥æº")]
+    [Tooltip("éšæœºæŠ½å¡çš„å¡æ± ï¼ˆé€šå¸¸æ˜¯å½“å‰å…³å¡çš„ç‰Œåº“ï¼‰")]
     [SerializeField] private List<CardData> randomCardPool = new List<CardData>();
 
     private void Awake()
@@ -27,14 +27,14 @@ public class SpellManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÉèÖÃËæ»ú³é¿¨µÄ¿¨³Ø
+    /// è®¾ç½®éšæœºæŠ½å¡çš„å¡æ± 
     /// </summary>
     public void SetRandomCardPool(List<CardData> cards)
     {
         randomCardPool.Clear();
         if (cards != null)
         {
-            // Ö»Ìí¼Ó·Ç·¨ÊõÅÆµ½¿¨³Ø
+            // åªæ·»åŠ éæ³•æœ¯ç‰Œåˆ°å¡æ± 
             foreach (var card in cards)
             {
                 if (card != null && !card.IsSpellCard)
@@ -43,35 +43,35 @@ public class SpellManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log($"[SpellManager] ÉèÖÃËæ»ú¿¨³Ø£¬¹² {randomCardPool.Count} ÕÅ¿¨");
+        Debug.Log($"[SpellManager] è®¾ç½®éšæœºå¡æ± ï¼Œå…± {randomCardPool.Count} å¼ å¡");
     }
 
     /// <summary>
-    /// Ê¹ÓÃ·¨ÊõÅÆ
+    /// ä½¿ç”¨æ³•æœ¯ç‰Œ
     /// </summary>
     public void UseSpellCard(CardData spellCard)
     {
         if (spellCard == null || !spellCard.IsSpellCard)
         {
-            Debug.LogWarning("[SpellManager] ³¢ÊÔÊ¹ÓÃ·Ç·¨ÊõÅÆ£¡");
+            Debug.LogWarning("[SpellManager] å°è¯•ä½¿ç”¨éæ³•æœ¯ç‰Œï¼");
             return;
         }
 
-        Debug.Log($"[SpellManager] Ê¹ÓÃ·¨ÊõÅÆ: {spellCard.GetDescription()}");
+        Debug.Log($"[SpellManager] ä½¿ç”¨æ³•æœ¯ç‰Œ: {spellCard.GetDescription()}");
 
-        // Ğ§¹û1£º»ñµÃµãÊı
+        // æ•ˆæœ1ï¼šè·å¾—ç‚¹æ•°
         if (spellCard.spellGainPoints > 0)
         {
             GainPoints(spellCard.spellGainPoints);
         }
 
-        // Ğ§¹û2£ºNPCÖØ×ßÂ·¾¶
+        // æ•ˆæœ2ï¼šNPCé‡èµ°è·¯å¾„
         if (spellCard.spellReplayNPC)
         {
             ReplayNPCPath();
         }
 
-        // Ğ§¹û3£ºËæ»úÔö¼ÓÊÖÅÆ
+        // æ•ˆæœ3ï¼šéšæœºå¢åŠ æ‰‹ç‰Œ
         if (spellCard.spellAddCards > 0)
         {
             AddRandomCards(spellCard.spellAddCards);
@@ -79,25 +79,25 @@ public class SpellManager : MonoBehaviour
     }
 
     /// <summary>
-    /// »ñµÃµãÊı
+    /// è·å¾—ç‚¹æ•°
     /// </summary>
     private void GainPoints(int points)
     {
         DeckManager.Instance?.ModifyPoints(points);
-        Debug.Log($"[SpellManager] »ñµÃ {points} µãÊı");
+        Debug.Log($"[SpellManager] è·å¾— {points} ç‚¹æ•°");
     }
 
     /// <summary>
-    /// NPCÖØ×ßÂ·¾¶
+    /// NPCé‡èµ°è·¯å¾„
     /// </summary>
     private void ReplayNPCPath()
     {
-        Debug.Log("[SpellManager] NPCÖØ×ßÂ·¾¶");
+        Debug.Log("[SpellManager] NPCé‡èµ°è·¯å¾„");
         StartCoroutine(ReplayNPCPathCoroutine());
     }
 
     /// <summary>
-    /// NPCÖØ×ßÂ·¾¶Ğ­³Ì
+    /// NPCé‡èµ°è·¯å¾„åç¨‹
     /// </summary>
     private IEnumerator ReplayNPCPathCoroutine()
     {
@@ -108,16 +108,16 @@ public class SpellManager : MonoBehaviour
 
         if (npcPawn == null || levelData == null) yield break;
 
-        // ÖØÖÃNPCÎ»ÖÃµ½Æğµã
+        // é‡ç½®NPCä½ç½®åˆ°èµ·ç‚¹
         npcPawn.SetPosition(levelData.npcStartPosition);
 
         yield return new WaitForSeconds(0.3f);
 
-        // ²¥·ÅNPCÂ·¾¶
+        // æ’­æ”¾NPCè·¯å¾„
         List<CardData> npcCards = levelData.npcCardSequence;
         yield return StartCoroutine(npcPawn.ExecuteCards(npcCards));
 
-        // ²¥·ÅÍê±ÏºóÉèÖÃµ½ÖÕµã²¢ÖØÖÃÍ¼±ê
+        // æ’­æ”¾å®Œæ¯•åè®¾ç½®åˆ°ç»ˆç‚¹å¹¶é‡ç½®å›¾æ ‡
         if (SlotManager.Instance != null)
         {
             Vector2Int npcEndPos = SlotManager.Instance.GetNPCEndPosition();
@@ -127,32 +127,32 @@ public class SpellManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Ëæ»úÔö¼ÓÊÖÅÆ
+    /// éšæœºå¢åŠ æ‰‹ç‰Œ
     /// </summary>
     private void AddRandomCards(int count)
     {
         if (randomCardPool == null || randomCardPool.Count == 0)
         {
-            Debug.LogWarning("[SpellManager] Ëæ»ú¿¨³ØÎª¿Õ£¬ÎŞ·¨³é¿¨£¡");
+            Debug.LogWarning("[SpellManager] éšæœºå¡æ± ä¸ºç©ºï¼Œæ— æ³•æŠ½å¡ï¼");
             return;
         }
 
         for (int i = 0; i < count; i++)
         {
-            // Ëæ»úÑ¡ÔñÒ»ÕÅ¿¨
+            // éšæœºé€‰æ‹©ä¸€å¼ å¡
             int randomIndex = Random.Range(0, randomCardPool.Count);
             CardData randomCard = randomCardPool[randomIndex];
 
             if (randomCard != null)
             {
                 DeckManager.Instance?.AddCardToHand(randomCard);
-                Debug.Log($"[SpellManager] Ëæ»ú³éµ½: {randomCard.GetDescription()}");
+                Debug.Log($"[SpellManager] éšæœºæŠ½åˆ°: {randomCard.GetDescription()}");
             }
         }
     }
 
     /// <summary>
-    /// ¼ì²é¿¨ÅÆÊÇ·ñ¿ÉÒÔÔÚUSEÇøÓòÊ¹ÓÃ£¨Ö»ÓĞ·¨ÊõÅÆ¿ÉÒÔ£©
+    /// æ£€æŸ¥å¡ç‰Œæ˜¯å¦å¯ä»¥åœ¨USEåŒºåŸŸä½¿ç”¨ï¼ˆåªæœ‰æ³•æœ¯ç‰Œå¯ä»¥ï¼‰
     /// </summary>
     public bool CanUseInUseArea(CardData cardData)
     {
