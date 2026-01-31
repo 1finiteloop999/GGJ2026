@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u8DF3\u8DC3"
   m_EditorClassIdentifier: 
   cardName: Jump
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: 4281637774074219296, guid: 337733449bd514e2281c5082ee678dfc, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
   direction: 0
   stepCount: 0

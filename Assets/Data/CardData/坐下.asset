@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u5750\u4E0B"
   m_EditorClassIdentifier: 
   cardName: Sit
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: -1780346783942680854, guid: 797482c411f88464292183f6b934c240, type: 3}
   cardColor: {r: 0, g: 1, b: 0.96841383, a: 1}
   direction: 0
   stepCount: 0
