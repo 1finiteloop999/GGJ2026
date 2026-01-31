@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
@@ -8,22 +9,16 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
-    
+
     [Header("点数显示")]
     [SerializeField] private TextMeshProUGUI pointsText;
-    
-    [Header("手牌显示")]
-    [SerializeField] private TextMeshProUGUI handCountText;
-    
-    [Header("阶段显示")]
-    [SerializeField] private TextMeshProUGUI phaseText;
-    
+
     [Header("按钮")]
     [SerializeField] private Button startPlanningButton;
     [SerializeField] private Button executeButton;
     [SerializeField] private Button replayButton;
     [SerializeField] private Button restartButton;
-    
+
     [Header("结果面板")]
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private TextMeshProUGUI resultText;
@@ -47,12 +42,12 @@ public class UIManager : MonoBehaviour
         {
             DeckManager.Instance.OnPointsChanged += UpdatePointsDisplay;
         }
-        
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
         }
-        
+
         // 绑定按钮
         BindButtons();
     }
@@ -64,7 +59,7 @@ public class UIManager : MonoBehaviour
         {
             DeckManager.Instance.OnPointsChanged -= UpdatePointsDisplay;
         }
-        
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
@@ -80,21 +75,32 @@ public class UIManager : MonoBehaviour
         {
             startPlanningButton.onClick.AddListener(() => GameManager.Instance?.OnStartPlanningButton());
         }
-        
+
         if (executeButton != null)
         {
             executeButton.onClick.AddListener(() => GameManager.Instance?.OnExecuteButton());
         }
-        
+
+        // Replay按钮 - 重新加载场景
         if (replayButton != null)
         {
-            replayButton.onClick.AddListener(() => GameManager.Instance?.OnReplayButton());
+            replayButton.onClick.AddListener(ReloadScene);
         }
-        
+
+        // Restart按钮 - 重新加载场景
         if (restartButton != null)
         {
-            restartButton.onClick.AddListener(() => GameManager.Instance?.OnRestartButton());
+            restartButton.onClick.AddListener(ReloadScene);
         }
+    }
+
+    /// <summary>
+    /// 重新加载当前场景
+    /// </summary>
+    private void ReloadScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 
     /// <summary>
@@ -113,27 +119,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void OnPhaseChanged(GamePhase phase)
     {
-        UpdatePhaseDisplay(phase);
         UpdateButtonStates(phase);
-    }
-
-    /// <summary>
-    /// 更新阶段显示
-    /// </summary>
-    private void UpdatePhaseDisplay(GamePhase phase)
-    {
-        if (phaseText == null) return;
-        
-        string phaseName = phase switch
-        {
-            GamePhase.Watching => "观看阶段",
-            GamePhase.Planning => "规划阶段",
-            GamePhase.Executing => "执行中...",
-            GamePhase.Result => "结算",
-            _ => ""
-        };
-        
-        phaseText.text = phaseName;
     }
 
     /// <summary>
@@ -146,25 +132,25 @@ public class UIManager : MonoBehaviour
         {
             startPlanningButton.gameObject.SetActive(phase == GamePhase.Watching);
         }
-        
+
         // 执行按钮 - 只在规划阶段可用
         if (executeButton != null)
         {
             executeButton.gameObject.SetActive(phase == GamePhase.Planning);
         }
-        
+
         // 重看按钮 - 在规划阶段可用
         if (replayButton != null)
         {
             replayButton.gameObject.SetActive(phase == GamePhase.Planning);
         }
-        
+
         // 重新开始按钮 - 在结算阶段可用
         if (restartButton != null)
         {
             restartButton.gameObject.SetActive(phase == GamePhase.Result);
         }
-        
+
         // 结果面板
         if (resultPanel != null)
         {
@@ -190,21 +176,10 @@ public class UIManager : MonoBehaviour
                 resultText.color = Color.red;
             }
         }
-        
+
         if (resultPanel != null)
         {
             resultPanel.SetActive(true);
-        }
-    }
-
-    /// <summary>
-    /// 更新手牌数量显示
-    /// </summary>
-    public void UpdateHandCount()
-    {
-        if (handCountText != null && DeckManager.Instance != null)
-        {
-            handCountText.text = $"手牌: {DeckManager.Instance.GetHandCount()}/{DeckManager.Instance.GetMaxHandSize()}";
         }
     }
 }
