@@ -406,7 +406,7 @@ MonoBehaviour:
   slotIndex: 2
   slotType: 2
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -586,7 +586,7 @@ MonoBehaviour:
   slotIndex: 6
   slotType: 2
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -721,7 +721,7 @@ MonoBehaviour:
   slotIndex: 0
   slotType: 0
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -764,7 +764,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 85, y: 85}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &207242788
 MonoBehaviour:
@@ -830,8 +830,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 3046817259674528574, guid: d33b700ef4c8e467d8e56d62e3a8229c, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1183,7 +1183,7 @@ MonoBehaviour:
   slotIndex: 4
   slotType: 1
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -1955,8 +1955,8 @@ MonoBehaviour:
   minSpacing: -80
   sellArea: {fileID: 1156282232}
   useArea: {fileID: 1567405953}
-  sellAreaUI: {fileID: 0}
-  useAreaUI: {fileID: 0}
+  sellAreaUI: {fileID: 1156282235}
+  useAreaUI: {fileID: 1567405956}
   initialCards: []
 --- !u!4 &648312369
 Transform:
@@ -2472,7 +2472,7 @@ MonoBehaviour:
   slotIndex: 5
   slotType: 2
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -2511,9 +2511,9 @@ MonoBehaviour:
   height: 6
   cellSize: 1
   lightColor: {r: 0.9622642, g: 0.93480444, b: 0.9123354, a: 1}
-  darkColor: {r: 0.8584906, g: 0.7375958, b: 0.5547793, a: 1}
+  darkColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   cellPrefab: {fileID: 0}
-  cellSprite: {fileID: -2864546556191802428, guid: d089326263351408aa71066518df2854, type: 3}
+  cellSprite: {fileID: 3851121370613375407, guid: 0cdec8f78d645464889b22f8a07e4999, type: 3}
   useAlternatingColors: 1
 --- !u!4 &779178018
 Transform:
@@ -2803,7 +2803,6 @@ GameObject:
   - component: {fileID: 1156282234}
   - component: {fileID: 1156282233}
   - component: {fileID: 1156282235}
-  - component: {fileID: 1156282236}
   m_Layer: 5
   m_Name: SellArea
   m_TagString: Untagged
@@ -2886,104 +2885,7 @@ MonoBehaviour:
   normalSprite: {fileID: 8320543638654565122, guid: 03684e9dafc034fbca8422b2dd234f3b, type: 3}
   activeSprite: {fileID: -3285577857512751948, guid: 97ef0c1ec90024cb6b0a294860df32c8, type: 3}
   successSound: {fileID: 8300000, guid: 54c941a2166b1437d8768ffbcec1f323, type: 3}
-  audioSource: {fileID: 1156282236}
---- !u!82 &1156282236
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156282231}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  audioSource: {fileID: 0}
 --- !u!1 &1167790272
 GameObject:
   m_ObjectHideFlags: 0
@@ -3075,7 +2977,7 @@ MonoBehaviour:
   slotIndex: 3
   slotType: 0
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -3400,7 +3302,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Deckshop
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3777,7 +3679,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -4364034832326165938, guid: 9a4335231de484a6198b4c776ecd3231, type: 3}
+  m_Sprite: {fileID: -7093942628915077772, guid: 9118b8c064dd24c7abb0f6c26e000bd6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3797,7 +3699,7 @@ Transform:
   m_GameObject: {fileID: 1459180901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.99, z: 0}
+  m_LocalPosition: {x: 0, y: 0.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4030,7 +3932,7 @@ MonoBehaviour:
   slotIndex: 1
   slotType: 1
   slotImage: {fileID: 0}
-  normalColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: 0.5, g: 0.8, b: 0.5, a: 0.7}
   occupiedColor: {r: 0.5, g: 0.5, b: 0.8, a: 0.5}
   invalidColor: {r: 0.8, g: 0.3, b: 0.3, a: 0.7}
@@ -4128,7 +4030,7 @@ MonoBehaviour:
   areaType: 0
   areaImage: {fileID: 0}
   normalSprite: {fileID: -714242061197780235, guid: a5a10bbb4d62047f98e9aa9901048c35, type: 3}
-  activeSprite: {fileID: -5360716102312834921, guid: 1e479b3586eb2479281c169a66772f71, type: 3}
+  activeSprite: {fileID: -3313409510792165715, guid: 34e1775d0583d426cb3f3cf92d80dcc0, type: 3}
   successSound: {fileID: 0}
   audioSource: {fileID: 0}
 --- !u!1 &1583926844
