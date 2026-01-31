@@ -39,4 +39,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
   - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}
   deckDisplayCount: 3
-  slotCount: 4
+  slotConfigs:
+  - slotIndex: 0
+    slotType: 0
+  - slotIndex: 1
+    slotType: 1
+  - slotIndex: 3
+    slotType: 2
