@@ -482,9 +482,9 @@ public class DeckManager : MonoBehaviour
     /// <summary>
     /// 尝试将卡牌返回手牌
     /// </summary>
-    public void TryReturnCardToHand(CardUI card)
+    public bool TryReturnCardToHand(CardUI card)
     {
-        if (card == null) return;
+        if (card == null) return false;
 
         // 返回手牌（无上限）
         card.SetParentAndReset(handContainer);
@@ -492,7 +492,12 @@ public class DeckManager : MonoBehaviour
         {
             handCards.Add(card);
         }
+
+        // 更新手牌布局
+        UpdateHandLayout();
+
         Debug.Log("卡牌返回手牌");
+        return true;
     }
 
     #endregion
