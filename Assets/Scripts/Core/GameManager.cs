@@ -310,6 +310,15 @@ public class GameManager : MonoBehaviour
         CurrentPhase = GamePhase.Planning;
         OnPhaseChanged?.Invoke(CurrentPhase);
 
+        // 停止所有NPC相关的协程
+        StopAllCoroutines();
+
+        // 停止NPC的移动动画
+        if (npcPawn != null)
+        {
+            npcPawn.StopAllCoroutines();
+        }
+
         SetUIActive(watchingUI, false);
         SetUIActive(planningUI, true);
         SetUIActive(resultUI, false);
@@ -323,7 +332,7 @@ public class GameManager : MonoBehaviour
             playerPawn.SetPosition(currentLevel.playerStartPosition);
         }
 
-        // NPC停在路径终点
+        // NPC立即移动到路径终点
         if (npcPawn != null && SlotManager.Instance != null)
         {
             Vector2Int npcEndPos = SlotManager.Instance.GetNPCEndPosition();
@@ -331,7 +340,7 @@ public class GameManager : MonoBehaviour
             Debug.Log($"NPC停在终点: {npcEndPos}");
         }
 
-        // 清空卡槽（这会返还所有点数，但不清除NPC路径预览）
+        // 清空卡槽内容
         SlotManager.Instance?.ClearAllSlots();
 
         // 显示NPC路径预览
