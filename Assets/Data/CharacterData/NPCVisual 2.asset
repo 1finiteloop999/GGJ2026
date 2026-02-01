@@ -17,10 +17,10 @@ MonoBehaviour:
   spriteDown: {fileID: -944312806997377978, guid: f737a888649b543b0b0b39e8c7586aa3, type: 3}
   spriteLeft: {fileID: -513750162270818376, guid: 98847d1f95e394f409bbd38079a1738d, type: 3}
   spriteRight: {fileID: -2161276900132581064, guid: 41acdfca4fa50452fbe7dab8b16699dc, type: 3}
-  spriteBow: {fileID: 610917150838453199, guid: 0d05d9bcb666e49cba24d6d39739e92d, type: 3}
-  spriteJump: {fileID: 1025937579893246056, guid: bc2107fd975774b118bb42b4955f3be6, type: 3}
+  spriteBow: {fileID: 21300000, guid: 0d05d9bcb666e49cba24d6d39739e92d, type: 3}
+  spriteJump: {fileID: 21300000, guid: bc2107fd975774b118bb42b4955f3be6, type: 3}
   spriteSitDown: {fileID: 0}
   spriteWave: {fileID: 8419064054554793501, guid: 17f5ce23d18a243f59ac13f806eea889, type: 3}
-  spritePause: {fileID: -73007746597958775, guid: 9ead8540ff3204b4cbe6b7e5838bd50d, type: 3}
-  spriteLaugh: {fileID: 7748499504820559535, guid: 83f19822c3125432a876210171226a8e, type: 3}
+  spritePause: {fileID: 21300000, guid: 9ead8540ff3204b4cbe6b7e5838bd50d, type: 3}
+  spriteLaugh: {fileID: 21300000, guid: 83f19822c3125432a876210171226a8e, type: 3}
   spriteAngry: {fileID: 0}
