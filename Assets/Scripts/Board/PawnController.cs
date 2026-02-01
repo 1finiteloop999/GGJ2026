@@ -111,7 +111,7 @@ public class PawnController : MonoBehaviour
             spriteRenderer.color = pawnColor;
         }
 
-        spriteRenderer.sortingOrder = 1;
+        spriteRenderer.sortingOrder = 10; // 角色显示在路径预览上方
         UpdateScale();
     }
 

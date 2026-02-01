@@ -135,7 +135,7 @@ public class SlotManager : MonoBehaviour
             parent = GridBoard.Instance.transform;
         }
 
-        // 创建NPC路径预览（在下层）
+        // 创建NPC路径预览（在角色下层）
         if (npcPathPreview == null)
         {
             GameObject npcPreviewObj = new GameObject("NPCPathPreview");
@@ -152,12 +152,12 @@ public class SlotManager : MonoBehaviour
             npcPathPreview.material = new Material(Shader.Find("Sprites/Default"));
             npcPathPreview.startColor = npcPreviewColor;
             npcPathPreview.endColor = npcPreviewColor;
-            npcPathPreview.sortingOrder = 4; // NPC路径在下层
+            npcPathPreview.sortingOrder = 1; // NPC路径在角色下层
             npcPathPreview.positionCount = 0;
             npcPathPreview.useWorldSpace = false;
         }
 
-        // 创建玩家路径预览（在上层）
+        // 创建玩家路径预览（在角色下层）
         if (pathPreview == null)
         {
             GameObject previewObj = new GameObject("PlayerPathPreview");
@@ -176,7 +176,7 @@ public class SlotManager : MonoBehaviour
         pathPreview.material = new Material(Shader.Find("Sprites/Default"));
         pathPreview.startColor = previewColor;
         pathPreview.endColor = previewColor;
-        pathPreview.sortingOrder = 5; // 玩家路径在上层
+        pathPreview.sortingOrder = 2; // 玩家路径在角色下层
         pathPreview.positionCount = 0;
 
         // 使用本地坐标，这样会随父物体一起移动和缩放
@@ -205,8 +205,11 @@ public class SlotManager : MonoBehaviour
         // 获取NPC起始位置
         Vector2Int currentPos = levelData.npcStartPosition;
 
+        // 路径下移偏移量
+        Vector3 pathOffset = new Vector3(0, -GridBoard.Instance.CellSize, 0);
+
         List<Vector3> positions = new List<Vector3>();
-        positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+        positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y) + pathOffset);
 
         foreach (var cmd in commands)
         {
@@ -226,7 +229,7 @@ public class SlotManager : MonoBehaviour
                 if (GridBoard.Instance.IsValidPosition(nextPos))
                 {
                     currentPos = nextPos;
-                    positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+                    positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y) + pathOffset);
                 }
                 else
                 {
@@ -439,10 +442,13 @@ public class SlotManager : MonoBehaviour
         // 获取玩家起始位置
         Vector2Int currentPos = GameManager.Instance?.PlayerStartPosition ?? new Vector2Int(0, 0);
 
+        // 路径下移偏移量
+        Vector3 pathOffset = new Vector3(0, -GridBoard.Instance.CellSize, 0);
+
         List<Vector3> positions = new List<Vector3>();
 
-        // 使用GridBoard的本地坐标方法
-        positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+        // 使用GridBoard的本地坐标方法，加上偏移
+        positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y) + pathOffset);
 
         foreach (var cmd in commands)
         {
@@ -463,7 +469,7 @@ public class SlotManager : MonoBehaviour
                 if (GridBoard.Instance.IsValidPosition(nextPos))
                 {
                     currentPos = nextPos;
-                    positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y));
+                    positions.Add(GridBoard.Instance.GetCellCenterLocal(currentPos.x, currentPos.y) + pathOffset);
                 }
                 else
                 {
@@ -537,5 +543,48 @@ public class SlotManager : MonoBehaviour
     public int GetSlotCount()
     {
         return slots.Count;
+    }
+
+    /// <summary>
+    /// 计算所有卡槽的总得分
+    /// </summary>
+    /// <param name="correctCardKeys">每个卡槽对应的正确答案的CompareKey列表</param>
+    /// <returns>总得分</returns>
+    public int CalculateTotalScore(List<string> correctCardKeys)
+    {
+        if (correctCardKeys == null) return 0;
+
+        int totalScore = 0;
+        var orderedSlots = GetOrderedSlots();
+
+        for (int i = 0; i < orderedSlots.Count && i < correctCardKeys.Count; i++)
+        {
+            var slot = orderedSlots[i];
+            string correctKey = correctCardKeys[i];
+
+            int slotScore = slot.CalculateScore(correctKey);
+            totalScore += slotScore;
+
+            Debug.Log($"[SlotManager] 卡槽{slot.SlotIndex}得分: {slotScore}");
+        }
+
+        Debug.Log($"[SlotManager] 总得分: {totalScore}");
+        return totalScore;
+    }
+
+    /// <summary>
+    /// 获取所有卡槽的总卡牌数（包括叠加的）
+    /// </summary>
+    public int GetTotalCardCount()
+    {
+        int count = 0;
+        foreach (var slot in slots)
+        {
+            if (slot != null)
+            {
+                count += slot.AllCards.Count;
+            }
+        }
+        return count;
     }
 }
