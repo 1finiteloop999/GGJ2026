@@ -61,6 +61,13 @@ public class LevelData : ScriptableObject
     [Tooltip("每次展开牌库显示的卡牌数量")]
     public int deckDisplayCount = 3;
 
+    [Header("关卡图片")]
+    [Tooltip("规划阶段显示的图片1")]
+    public Sprite planningImage1;
+
+    [Tooltip("规划阶段显示的图片2")]
+    public Sprite planningImage2;
+
     /// <summary>
     /// 获取NPC移动指令列表（用于路径预览，兼容旧接口）
     /// </summary>

@@ -39,3 +39,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb368f93186cc3a4a99527949a8d90af, type: 2}
   - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}
   deckDisplayCount: 3
+  planningImage1: {fileID: -1929853956713890838, guid: 5ff8a7ef6b9cbdf4b9bbaf43f58edeaa, type: 3}
+  planningImage2: {fileID: 4994112673742514045, guid: 2c5db9d430310e448a49eb727af0f4e2, type: 3}
