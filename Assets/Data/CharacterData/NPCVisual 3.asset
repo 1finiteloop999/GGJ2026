@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ea86211c06c85d4fad17cb585ca57d2, type: 3}
+  m_Name: NPCVisual 3
+  m_EditorClassIdentifier: 
+  spriteIdle: {fileID: -944312806997377978, guid: a464ad990754440fe867ecb1351bc806, type: 3}
+  spriteUp: {fileID: -5215294921018556061, guid: 5f631db4f7c3848b385fbe953ba3a51e, type: 3}
+  spriteDown: {fileID: -944312806997377978, guid: a464ad990754440fe867ecb1351bc806, type: 3}
+  spriteLeft: {fileID: -513750162270818376, guid: 989c3d266282b44c3bc166545c87a29d, type: 3}
+  spriteRight: {fileID: -2161276900132581064, guid: f073387bb33024a7bba7b48f47ccc3e4, type: 3}
+  spriteBow: {fileID: 0}
+  spriteJump: {fileID: 0}
+  spriteSitDown: {fileID: 0}
+  spriteWave: {fileID: 0}
+  spritePause: {fileID: -6447624453499070238, guid: 48120da370b584275a290a2d6bfd2f89, type: 3}
+  spriteLaugh: {fileID: 0}
+  spriteAngry: {fileID: 2008069721059374675, guid: 43e81ed30394b424796e7f0c4adf8f5d, type: 3}
