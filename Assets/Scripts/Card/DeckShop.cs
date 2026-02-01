@@ -225,6 +225,9 @@ public class DeckShop : MonoBehaviour
         isExpanded = true;
         isAnimating = true;
 
+        // 播放展开音效
+        SoundManager.Instance?.PlayDeckExpand();
+
         // 补充展示卡牌
         RefillDisplayCards();
 
@@ -264,6 +267,9 @@ public class DeckShop : MonoBehaviour
     {
         isExpanded = false;
         isAnimating = true;
+
+        // 播放收起音效
+        SoundManager.Instance?.PlayDeckCollapse();
 
         // 先清除卡牌UI
         ClearDisplayCards();

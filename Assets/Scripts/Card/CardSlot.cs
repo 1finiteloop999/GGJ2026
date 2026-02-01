@@ -185,6 +185,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         UpdateVisual();
         SlotManager.Instance?.OnSlotChanged();
 
+        // 播放卡牌放入音效
+        SoundManager.Instance?.PlayCardPlace();
+
         Debug.Log($"[CardSlot] 放置底牌: {card.CardData?.GetDescription()}");
         return true;
     }
@@ -231,6 +234,9 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
         UpdateVisual();
         SlotManager.Instance?.OnSlotChanged();
+
+        // 播放卡牌放入音效
+        SoundManager.Instance?.PlayCardPlace();
 
         Debug.Log($"[CardSlot] 叠加卡牌: {card.CardData?.GetDescription()}, 当前堆栈数={cardStack.Count}");
         return true;
