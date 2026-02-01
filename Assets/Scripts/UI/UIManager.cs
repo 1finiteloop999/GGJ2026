@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     [Header("点数显示")]
     [SerializeField] private TextMeshProUGUI pointsText;
 
+    [Header("牌库显示")]
+    [Tooltip("牌库剩余牌数文本")]
+    [SerializeField] private TextMeshProUGUI deckCountText;
+
     [Header("按钮")]
     [SerializeField] private Button startPlanningButton;
     [SerializeField] private Button executeButton;
@@ -48,6 +52,14 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
         }
 
+        // 订阅牌库变化事件
+        if (DeckShop.Instance != null)
+        {
+            DeckShop.Instance.OnDeckCountChanged += UpdateDeckCountDisplay;
+            // 初始化显示
+            UpdateDeckCountDisplay(DeckShop.Instance.GetRemainingCount());
+        }
+
         // 绑定按钮
         BindButtons();
     }
@@ -63,6 +75,11 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+        }
+
+        if (DeckShop.Instance != null)
+        {
+            DeckShop.Instance.OnDeckCountChanged -= UpdateDeckCountDisplay;
         }
     }
 
@@ -111,6 +128,17 @@ public class UIManager : MonoBehaviour
         if (pointsText != null)
         {
             pointsText.text = $"{points}";
+        }
+    }
+
+    /// <summary>
+    /// 更新牌库剩余牌数显示
+    /// </summary>
+    public void UpdateDeckCountDisplay(int count)
+    {
+        if (deckCountText != null)
+        {
+            deckCountText.text = $"{count}";
         }
     }
 

@@ -67,6 +67,17 @@ public class DeckShop : MonoBehaviour
     private Vector2 handContainerOriginalOffsetMax;
     private bool hasRecordedOriginalOffset = false;
 
+    // 牌库数量变化事件
+    public System.Action<int> OnDeckCountChanged;
+
+    /// <summary>
+    /// 通知牌库数量变化
+    /// </summary>
+    private void NotifyDeckCountChanged()
+    {
+        OnDeckCountChanged?.Invoke(GetRemainingCount());
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -175,6 +186,9 @@ public class DeckShop : MonoBehaviour
 
         // 通知DeckManager更新布局
         DeckManager.Instance?.OnContainerSizeChanged();
+
+        // 通知牌库数量变化
+        NotifyDeckCountChanged();
 
         Debug.Log($"[DeckShop] 初始化牌库，共 {availableDeck.Count} 张卡牌");
     }
@@ -345,6 +359,9 @@ public class DeckShop : MonoBehaviour
 
             Debug.Log($"[DeckShop] 从牌库抽取: {card.cardName}，剩余 {availableDeck.Count} 张");
         }
+
+        // 通知牌库数量变化
+        NotifyDeckCountChanged();
     }
 
     /// <summary>
