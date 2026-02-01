@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0525aa14c55cdf14f9b74674911e21ae, type: 3}
   m_Name: LevelData_Test w003
   m_EditorClassIdentifier: 
-  levelName: Test_w002
+  levelName: Test_w003
   levelIndex: 0
   startingPoints: 18
   playerStartPosition: {x: 10, y: 5}

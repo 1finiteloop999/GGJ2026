@@ -21,6 +21,6 @@ MonoBehaviour:
   spriteJump: {fileID: 1025937579893246056, guid: 55c1cf60ae9554e099c146b392e7ab17, type: 3}
   spriteSitDown: {fileID: 7852389497057511192, guid: 97f2a48e5a22642c2b8b19e88da0a202, type: 3}
   spriteWave: {fileID: 8419064054554793501, guid: d0d3c07cc0cd54eb59131a935ea4d2b4, type: 3}
-  spritePause: {fileID: 21300000, guid: 564e17d5658ae49feba28e63e2b6b08d, type: 3}
+  spritePause: {fileID: 21300000, guid: 2a8aa9e299ef84116b5e79dc2ec07549, type: 3}
   spriteLaugh: {fileID: 21300000, guid: 60057860446cc4e24bf0985aa31a8c82, type: 3}
   spriteAngry: {fileID: 21300000, guid: 564e17d5658ae49feba28e63e2b6b08d, type: 3}
