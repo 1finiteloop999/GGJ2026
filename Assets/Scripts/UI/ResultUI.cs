@@ -10,44 +10,33 @@ public class ResultUI : MonoBehaviour
 {
     public static ResultUI Instance { get; private set; }
 
-    [Header("分数显示")]
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private TextMeshProUGUI maxScoreText;
-    [SerializeField] private TextMeshProUGUI percentText;
-
-    [Header("评级显示")]
-    [SerializeField] private TextMeshProUGUI rankText;
+    [Header("Rank Display")]
+    [Tooltip("Rank image (F/A/S/SS/SSS)")]
     [SerializeField] private Image rankImage;
 
-    [Header("评级精灵（可选）")]
+    [Header("Rank Sprites")]
     [SerializeField] private Sprite spriteF;
     [SerializeField] private Sprite spriteA;
     [SerializeField] private Sprite spriteS;
     [SerializeField] private Sprite spriteSS;
     [SerializeField] private Sprite spriteSSS;
 
-    [Header("评级颜色")]
-    [SerializeField] private Color colorF = Color.gray;
-    [SerializeField] private Color colorA = Color.white;
-    [SerializeField] private Color colorS = Color.green;
-    [SerializeField] private Color colorSS = Color.cyan;
-    [SerializeField] private Color colorSSS = Color.yellow;
+    [Header("Score Display")]
+    [Tooltip("Score text (e.g. '17')")]
+    [SerializeField] private TextMeshProUGUI scoreText;
 
-    [Header("通关状态")]
-    [SerializeField] private TextMeshProUGUI statusText;
-    [SerializeField] private GameObject passedEffect;
-    [SerializeField] private GameObject failedEffect;
+    [Header("Score Slider")]
+    [Tooltip("Score progress slider (non-interactable)")]
+    [SerializeField] private Slider scoreSlider;
 
-    [Header("详细信息")]
-    [SerializeField] private TextMeshProUGUI detailText;
-    [SerializeField] private Transform stepResultContainer;
-    [SerializeField] private GameObject stepResultPrefab;
+    [Header("Buttons")]
+    [Tooltip("Restart current level")]
+    [SerializeField] private Button restartButton;
 
-    [Header("按钮")]
-    [SerializeField] private Button retryButton;
+    [Tooltip("Go to next level")]
     [SerializeField] private Button nextButton;
 
-    [Header("动画设置")]
+    [Header("Animation Settings")]
     [SerializeField] private float scoreAnimationDuration = 1f;
     [SerializeField] private bool useScoreAnimation = true;
 
@@ -65,32 +54,35 @@ public class ResultUI : MonoBehaviour
 
     private void Start()
     {
-        // 绑定按钮事件
-        if (retryButton != null)
+        // Bind button events
+        if (restartButton != null)
         {
-            retryButton.onClick.AddListener(OnRetryClicked);
+            restartButton.onClick.AddListener(OnRestartClicked);
         }
 
         if (nextButton != null)
         {
             nextButton.onClick.AddListener(OnNextClicked);
         }
+
+        // Make slider non-interactable
+        if (scoreSlider != null)
+        {
+            scoreSlider.interactable = false;
+        }
     }
 
     /// <summary>
-    /// 显示结果
+    /// Show result
     /// </summary>
     public void ShowResult(CompareResult result, LevelData levelData)
     {
         gameObject.SetActive(true);
 
-        // 显示评级
+        // Show rank image
         ShowRank(result.rank);
 
-        // 显示通关状态
-        ShowPassStatus(result.isPassed);
-
-        // 显示分数
+        // Show score with animation
         if (useScoreAnimation)
         {
             StartCoroutine(AnimateScore(result.totalScore, result.maxScore));
@@ -100,10 +92,7 @@ public class ResultUI : MonoBehaviour
             ShowScoreImmediate(result.totalScore, result.maxScore);
         }
 
-        // 显示详细信息
-        ShowDetails(result, levelData);
-
-        // 控制下一关按钮
+        // Control next button visibility (only show if passed)
         if (nextButton != null)
         {
             nextButton.gameObject.SetActive(result.isPassed);
@@ -111,49 +100,23 @@ public class ResultUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示评级
+    /// Show rank image
     /// </summary>
     private void ShowRank(RankType rank)
     {
-        if (rankText != null)
-        {
-            rankText.text = rank.ToString();
-            rankText.color = GetRankColor(rank);
-        }
-
         if (rankImage != null)
         {
             Sprite rankSprite = GetRankSprite(rank);
             if (rankSprite != null)
             {
                 rankImage.sprite = rankSprite;
-                rankImage.color = Color.white;
-            }
-            else
-            {
-                rankImage.color = GetRankColor(rank);
+                rankImage.gameObject.SetActive(true);
             }
         }
     }
 
     /// <summary>
-    /// 获取评级颜色
-    /// </summary>
-    private Color GetRankColor(RankType rank)
-    {
-        return rank switch
-        {
-            RankType.F => colorF,
-            RankType.A => colorA,
-            RankType.S => colorS,
-            RankType.SS => colorSS,
-            RankType.SSS => colorSSS,
-            _ => Color.white
-        };
-    }
-
-    /// <summary>
-    /// 获取评级精灵
+    /// Get rank sprite
     /// </summary>
     private Sprite GetRankSprite(RankType rank)
     {
@@ -169,29 +132,7 @@ public class ResultUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示通关状态
-    /// </summary>
-    private void ShowPassStatus(bool passed)
-    {
-        if (statusText != null)
-        {
-            statusText.text = passed ? "CLEAR!" : "FAILED";
-            statusText.color = passed ? Color.green : Color.red;
-        }
-
-        if (passedEffect != null)
-        {
-            passedEffect.SetActive(passed);
-        }
-
-        if (failedEffect != null)
-        {
-            failedEffect.SetActive(!passed);
-        }
-    }
-
-    /// <summary>
-    /// 立即显示分数
+    /// Show score immediately
     /// </summary>
     private void ShowScoreImmediate(int score, int maxScore)
     {
@@ -200,33 +141,35 @@ public class ResultUI : MonoBehaviour
             scoreText.text = score.ToString();
         }
 
-        if (maxScoreText != null)
+        if (scoreSlider != null)
         {
-            maxScoreText.text = $"/ {maxScore}";
-        }
-
-        if (percentText != null)
-        {
-            float percent = maxScore > 0 ? (float)score / maxScore * 100f : 0f;
-            percentText.text = $"{percent:F0}%";
+            scoreSlider.maxValue = maxScore > 0 ? maxScore : 1;
+            scoreSlider.value = score;
         }
     }
 
     /// <summary>
-    /// 分数动画
+    /// Animate score
     /// </summary>
     private IEnumerator AnimateScore(int targetScore, int maxScore)
     {
         float elapsed = 0f;
         int currentScore = 0;
 
+        // Set slider max value
+        if (scoreSlider != null)
+        {
+            scoreSlider.maxValue = maxScore > 0 ? maxScore : 1;
+            scoreSlider.value = 0;
+        }
+
         while (elapsed < scoreAnimationDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / scoreAnimationDuration;
 
-            // 使用缓动函数
-            t = 1f - Mathf.Pow(1f - t, 3f); // ease out cubic
+            // Ease out cubic
+            t = 1f - Mathf.Pow(1f - t, 3f);
 
             currentScore = Mathf.RoundToInt(Mathf.Lerp(0, targetScore, t));
 
@@ -235,88 +178,28 @@ public class ResultUI : MonoBehaviour
                 scoreText.text = currentScore.ToString();
             }
 
-            if (maxScoreText != null)
+            if (scoreSlider != null)
             {
-                maxScoreText.text = $"/ {maxScore}";
-            }
-
-            if (percentText != null)
-            {
-                float percent = maxScore > 0 ? (float)currentScore / maxScore * 100f : 0f;
-                percentText.text = $"{percent:F0}%";
+                scoreSlider.value = currentScore;
             }
 
             yield return null;
         }
 
-        // 确保最终值精确
+        // Ensure final values are exact
         ShowScoreImmediate(targetScore, maxScore);
     }
 
     /// <summary>
-    /// 显示详细信息
+    /// Restart button clicked
     /// </summary>
-    private void ShowDetails(CompareResult result, LevelData levelData)
-    {
-        if (detailText != null)
-        {
-            string details = $"Correct: {result.correctCount}/{result.totalSteps}\n";
-
-            if (levelData != null)
-            {
-                details += $"\nScore Threshold:\n";
-                details += $"A: {levelData.scoreA}  S: {levelData.scoreS}\n";
-                details += $"SS: {levelData.scoreSS}  SSS: {levelData.scoreSSS}";
-            }
-
-            detailText.text = details;
-        }
-
-        // 如果有步骤结果容器和预制体，显示每步详情
-        if (stepResultContainer != null && stepResultPrefab != null)
-        {
-            // 清空旧的
-            foreach (Transform child in stepResultContainer)
-            {
-                Destroy(child.gameObject);
-            }
-
-            // 创建新的
-            foreach (var stepResult in result.stepResults)
-            {
-                GameObject stepObj = Instantiate(stepResultPrefab, stepResultContainer);
-
-                // 尝试设置文本
-                TextMeshProUGUI stepText = stepObj.GetComponentInChildren<TextMeshProUGUI>();
-                if (stepText != null)
-                {
-                    string npcName = stepResult.npcCard != null ? stepResult.npcCard.GetDescription() : "-";
-                    string playerName = stepResult.playerCard != null ? stepResult.playerCard.GetDescription() : "-";
-                    string mark = stepResult.isCorrect ? "✓" : "✗";
-                    stepText.text = $"{stepResult.stepIndex + 1}. {npcName} vs {playerName} {mark} +{stepResult.scoreGained}";
-                    stepText.color = stepResult.isCorrect ? Color.green : Color.red;
-                }
-
-                // 尝试设置图片颜色
-                Image stepImage = stepObj.GetComponent<Image>();
-                if (stepImage != null)
-                {
-                    stepImage.color = stepResult.isCorrect ? new Color(0.5f, 1f, 0.5f, 0.3f) : new Color(1f, 0.5f, 0.5f, 0.3f);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// 重试按钮点击
-    /// </summary>
-    private void OnRetryClicked()
+    private void OnRestartClicked()
     {
         GameManager.Instance?.OnRestartButton();
     }
 
     /// <summary>
-    /// 下一关按钮点击
+    /// Next button clicked
     /// </summary>
     private void OnNextClicked()
     {
@@ -324,7 +207,7 @@ public class ResultUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 隐藏结果UI
+    /// Hide result UI
     /// </summary>
     public void Hide()
     {
