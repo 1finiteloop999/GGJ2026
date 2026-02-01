@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteLeft: {fileID: -513750162270818376, guid: 6d6d354877a8349cc97988ba69ce0de8, type: 3}
   spriteRight: {fileID: -2161276900132581064, guid: 3acbfdfdd817f421fad8ddad5b97bea6, type: 3}
   spriteBow: {fileID: 2559874676089321523, guid: e78c7187cea4b4e258b4e84486db2d06, type: 3}
-  spriteJump: {fileID: 4281637774074219296, guid: 337733449bd514e2281c5082ee678dfc, type: 3}
+  spriteJump: {fileID: 21300000, guid: 55c1cf60ae9554e099c146b392e7ab17, type: 3}
   spriteSitDown: {fileID: 7852389497057511192, guid: 97f2a48e5a22642c2b8b19e88da0a202, type: 3}
   spriteWave: {fileID: 8419064054554793501, guid: d0d3c07cc0cd54eb59131a935ea4d2b4, type: 3}
   spritePause: {fileID: 21300000, guid: 2a8aa9e299ef84116b5e79dc2ec07549, type: 3}
