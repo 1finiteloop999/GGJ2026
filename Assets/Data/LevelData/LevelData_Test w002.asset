@@ -31,8 +31,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c638a4c1afad90d4cb9a9cbdc82d0086, type: 2}
   scoreA: 24
   scoreS: 30
-  scoreSS: 31
-  scoreSSS: 32
+  scoreSS: 34
+  scoreSSS: 40
   initialCards:
   - {fileID: 11400000, guid: b53629900ffde49fabc719e2638ce82c, type: 2}
   - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}

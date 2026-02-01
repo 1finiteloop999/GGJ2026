@@ -28,7 +28,7 @@ MonoBehaviour:
   scoreA: 14
   scoreS: 20
   scoreSS: 21
-  scoreSSS: 22
+  scoreSSS: 30
   initialCards:
   - {fileID: 11400000, guid: 1c62160e5c81cd74e865344fbaeb6969, type: 2}
   - {fileID: 11400000, guid: 5cdb537e6b6be974db4711568341d63e, type: 2}

@@ -110,6 +110,7 @@ public class ResultUI : MonoBehaviour
             if (rankSprite != null)
             {
                 rankImage.sprite = rankSprite;
+                rankImage.SetNativeSize(); // Set to original image size
                 rankImage.gameObject.SetActive(true);
             }
         }
@@ -144,7 +145,8 @@ public class ResultUI : MonoBehaviour
         if (scoreSlider != null)
         {
             scoreSlider.maxValue = maxScore > 0 ? maxScore : 1;
-            scoreSlider.value = score;
+            // Clamp value to max to prevent overflow
+            scoreSlider.value = Mathf.Min(score, scoreSlider.maxValue);
         }
     }
 
@@ -163,6 +165,9 @@ public class ResultUI : MonoBehaviour
             scoreSlider.value = 0;
         }
 
+        // Clamp target score for slider animation
+        int clampedTargetScore = Mathf.Min(targetScore, maxScore);
+
         while (elapsed < scoreAnimationDuration)
         {
             elapsed += Time.deltaTime;
@@ -180,7 +185,8 @@ public class ResultUI : MonoBehaviour
 
             if (scoreSlider != null)
             {
-                scoreSlider.value = currentScore;
+                // Clamp slider value to max
+                scoreSlider.value = Mathf.Min(currentScore, scoreSlider.maxValue);
             }
 
             yield return null;
