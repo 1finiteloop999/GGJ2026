@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,6 +23,13 @@ public class GameManager : MonoBehaviour
 
     [Header("关卡数据")]
     [SerializeField] private LevelData currentLevel;
+
+    [Header("场景跳转设置")]
+    [Tooltip("下一关场景名称（留空则使用场景索引）")]
+    [SerializeField] private string nextSceneName = "";
+
+    [Tooltip("下一关场景索引（-1表示加载下一个Build Index）")]
+    [SerializeField] private int nextSceneIndex = -1;
 
     [Header("棋盘引用")]
     [SerializeField] private Transform boardContainer; // 包含棋盘、NPC、玩家的父物体
@@ -609,8 +617,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnRestartButton()
     {
-        StopAllCoroutines();
-        StartLevel(currentLevel);
+        // 重新加载当前场景
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 
     /// <summary>
@@ -618,8 +627,21 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnNextLevelButton()
     {
-        // TODO: 加载下一关
-        Debug.Log("下一关功能待实现");
+        // 跳转到下一关
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else if (nextSceneIndex >= 0)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            // 默认加载下一个场景索引
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(currentIndex + 1);
+        }
     }
 
     #endregion
