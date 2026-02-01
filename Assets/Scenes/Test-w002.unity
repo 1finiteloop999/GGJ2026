@@ -4101,9 +4101,9 @@ MonoBehaviour:
   - {fileID: 795934121}
   - {fileID: 1892346445}
   pathPreview: {fileID: 0}
-  previewColor: {r: 1, g: 1, b: 0, a: 0.8}
+  previewColor: {r: 0.47843137, g: 0.54509807, b: 0.8666667, a: 1}
   npcPathPreview: {fileID: 0}
-  npcPreviewColor: {r: 1, g: 0.5, b: 0.5, a: 0.6}
+  npcPreviewColor: {r: 0.84313726, g: 0.5372549, b: 0.54901963, a: 1}
 --- !u!4 &1367345486
 Transform:
   m_ObjectHideFlags: 0
@@ -4259,7 +4259,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -7307999360097759165, guid: bceb6917aa5394785b9c0d6cc5b6e8b1, type: 3}
+  m_Sprite: {fileID: 6937817954938267909, guid: f1ebbf4b8becc49d994936bf7e935a14, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4279,7 +4279,7 @@ Transform:
   m_GameObject: {fileID: 1459180901}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.02, y: 0.39, z: 0}
+  m_LocalPosition: {x: -0.02, y: 0.92, z: 0}
   m_LocalScale: {x: 0.9802, y: 0.9802, z: 0.9802}
   m_ConstrainProportionsScale: 1
   m_Children: []
