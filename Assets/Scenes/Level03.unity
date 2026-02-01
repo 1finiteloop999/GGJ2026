@@ -7930,7 +7930,7 @@ MonoBehaviour:
   cardPlaceSound: {fileID: 0}
   deckExpandSound: {fileID: 8300000, guid: fbfaf10691f0e4f6f9a0ac745e1eb24d, type: 3}
   deckCollapseSound: {fileID: 0}
-  npcDialogueSound: {fileID: 0}
+  npcDialogueSound: {fileID: 8300000, guid: 10018750f55e74c639c3eeca712c2adc, type: 3}
   npcBowSound: {fileID: 0}
   npcJumpSound: {fileID: 0}
   npcSitSound: {fileID: 0}
@@ -7940,7 +7940,7 @@ MonoBehaviour:
   buttonVolume: 1
   cardVolume: 1
   deckVolume: 1
-  npcVolume: 1
+  npcVolume: 0.396
 --- !u!4 &2000470839
 Transform:
   m_ObjectHideFlags: 0
