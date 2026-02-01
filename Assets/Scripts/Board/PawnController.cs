@@ -453,6 +453,9 @@ public class PawnController : MonoBehaviour
         IsPerformingAction = true;
         Debug.Log($"[Pawn] 执行动作: {action}");
 
+        // 播放动作音效
+        SoundManager.Instance?.PlayNPCAction(action);
+
         // 切换到动作图标
         if (visualData != null && spriteRenderer != null)
         {
@@ -481,6 +484,9 @@ public class PawnController : MonoBehaviour
 
         IsPerformingAction = true;
         Debug.Log($"[Pawn] 执行表情: {expression}");
+
+        // 播放表情音效
+        SoundManager.Instance?.PlayNPCExpression(expression);
 
         // 切换到表情图标
         if (visualData != null && spriteRenderer != null)

@@ -119,6 +119,9 @@ public class NPCInteraction : MonoBehaviour, IPointerClickHandler
             dialogueCanvasGroup.alpha = 1f;
         }
 
+        // Play dialogue sound
+        SoundManager.Instance?.PlayNPCDialogue();
+
         // Start stay and fade coroutine
         dialogueCoroutine = StartCoroutine(DialogueStayAndFade());
     }

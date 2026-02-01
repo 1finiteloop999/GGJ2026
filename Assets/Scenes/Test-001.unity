@@ -2996,6 +2996,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: {fileID: 11400000, guid: df2015e8ad115ec4daf98df52c981afe, type: 2}
+  nextSceneName: 
+  nextSceneIndex: -1
   boardContainer: {fileID: 1680450495}
   boardCenterPosition: {x: 0, y: 0, z: 0}
   boardPlanningPosition: {x: -5, y: 0, z: 0}
@@ -4471,9 +4473,17 @@ MonoBehaviour:
   cardPlaceSound: {fileID: 0}
   deckExpandSound: {fileID: 8300000, guid: 9cada1e1d229d4e3ca5a23283badedd1, type: 3}
   deckCollapseSound: {fileID: 0}
+  npcDialogueSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcBowSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcJumpSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcSitSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcWaveSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcAngrySound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
+  npcLaughSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
   buttonVolume: 1
   cardVolume: 1
   deckVolume: 1
+  npcVolume: 1
 --- !u!1 &1342906137
 GameObject:
   m_ObjectHideFlags: 0

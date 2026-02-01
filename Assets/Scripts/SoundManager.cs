@@ -12,18 +12,42 @@ public class SoundManager : MonoBehaviour
     [Tooltip("Audio source for playing sounds")]
     [SerializeField] private AudioSource audioSource;
 
-    [Header("Sound Effects")]
+    [Header("UI Sound Effects")]
     [Tooltip("Button click sound")]
     [SerializeField] private AudioClip buttonClickSound;
 
+    [Header("Card Sound Effects")]
     [Tooltip("Card placed in slot sound")]
     [SerializeField] private AudioClip cardPlaceSound;
 
+    [Header("Deck Sound Effects")]
     [Tooltip("Deck expand sound")]
     [SerializeField] private AudioClip deckExpandSound;
 
     [Tooltip("Deck collapse sound")]
     [SerializeField] private AudioClip deckCollapseSound;
+
+    [Header("NPC Sound Effects")]
+    [Tooltip("NPC dialogue popup sound")]
+    [SerializeField] private AudioClip npcDialogueSound;
+
+    [Tooltip("NPC bow action sound")]
+    [SerializeField] private AudioClip npcBowSound;
+
+    [Tooltip("NPC jump action sound")]
+    [SerializeField] private AudioClip npcJumpSound;
+
+    [Tooltip("NPC sit action sound")]
+    [SerializeField] private AudioClip npcSitSound;
+
+    [Tooltip("NPC wave action sound")]
+    [SerializeField] private AudioClip npcWaveSound;
+
+    [Tooltip("NPC angry expression sound")]
+    [SerializeField] private AudioClip npcAngrySound;
+
+    [Tooltip("NPC laugh expression sound")]
+    [SerializeField] private AudioClip npcLaughSound;
 
     [Header("Volume Settings")]
     [Range(0f, 1f)]
@@ -34,6 +58,9 @@ public class SoundManager : MonoBehaviour
 
     [Range(0f, 1f)]
     [SerializeField] private float deckVolume = 1f;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float npcVolume = 1f;
 
     private void Awake()
     {
@@ -92,6 +119,46 @@ public class SoundManager : MonoBehaviour
     public void PlayDeckCollapse()
     {
         PlaySound(deckCollapseSound, deckVolume);
+    }
+
+    /// <summary>
+    /// Play NPC dialogue popup sound
+    /// </summary>
+    public void PlayNPCDialogue()
+    {
+        PlaySound(npcDialogueSound, npcVolume);
+    }
+
+    /// <summary>
+    /// Play NPC action sound by action type
+    /// </summary>
+    public void PlayNPCAction(ActionType actionType)
+    {
+        AudioClip clip = actionType switch
+        {
+            ActionType.Bow => npcBowSound,
+            ActionType.Jump => npcJumpSound,
+            ActionType.SitDown => npcSitSound,
+            ActionType.Wave => npcWaveSound,
+            _ => null
+        };
+
+        PlaySound(clip, npcVolume);
+    }
+
+    /// <summary>
+    /// Play NPC expression sound by expression type
+    /// </summary>
+    public void PlayNPCExpression(ExpressionType expressionType)
+    {
+        AudioClip clip = expressionType switch
+        {
+            ExpressionType.Angry => npcAngrySound,
+            ExpressionType.Laugh => npcLaughSound,
+            _ => null
+        };
+
+        PlaySound(clip, npcVolume);
     }
 
     #endregion
