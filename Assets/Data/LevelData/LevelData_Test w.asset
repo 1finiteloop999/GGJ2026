@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Test_w001
   levelIndex: 0
-  startingPoints: 10
+  startingPoints: 12
   playerStartPosition: {x: 9, y: 6}
   npcStartPosition: {x: 5, y: 5}
   npcCardSequence:

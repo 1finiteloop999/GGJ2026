@@ -364,7 +364,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 257.9, y: -82.89995}
+  m_AnchoredPosition: {x: 267, y: -82.89995}
   m_SizeDelta: {x: 90, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &102037405
@@ -596,7 +596,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 555.2, y: -234.1}
+  m_AnchoredPosition: {x: 563.4, y: -234.1}
   m_SizeDelta: {x: 90, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &151600274
@@ -1729,7 +1729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 65, y: 65}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &500002307
@@ -2013,7 +2013,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 65, y: 65}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &528237919
@@ -2548,7 +2548,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -143, y: 120}
   m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &706586377
@@ -3032,7 +3032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 453.5, y: -234.1}
+  m_AnchoredPosition: {x: 458, y: -234.1}
   m_SizeDelta: {x: 90, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &776910097
@@ -3710,7 +3710,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0025024414, y: 0}
+  m_AnchoredPosition: {x: 0.0024414062, y: 0}
   m_SizeDelta: {x: 0.0050049, y: -0.000061035}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1145482760
@@ -3844,7 +3844,7 @@ MonoBehaviour:
   areaImage: {fileID: 0}
   normalSprite: {fileID: 8320543638654565122, guid: 03684e9dafc034fbca8422b2dd234f3b, type: 3}
   activeSprite: {fileID: -331447347337162282, guid: ccd70e0d1b32c4cbaac97c85ee7ab135, type: 3}
-  successSound: {fileID: 8300000, guid: 54c941a2166b1437d8768ffbcec1f323, type: 3}
+  successSound: {fileID: 8300000, guid: f75ee0a5ffe524dbfa89b15d600895d0, type: 3}
   audioSource: {fileID: 0}
 --- !u!1 &1167790272
 GameObject:
@@ -5828,7 +5828,7 @@ MonoBehaviour:
   areaImage: {fileID: 0}
   normalSprite: {fileID: -714242061197780235, guid: a5a10bbb4d62047f98e9aa9901048c35, type: 3}
   activeSprite: {fileID: -3313409510792165715, guid: 34e1775d0583d426cb3f3cf92d80dcc0, type: 3}
-  successSound: {fileID: 0}
+  successSound: {fileID: 8300000, guid: 319c405cd23074dc696cec23010133a4, type: 3}
   audioSource: {fileID: 0}
 --- !u!1 &1583926844
 GameObject:
@@ -7637,9 +7637,17 @@ MonoBehaviour:
   cardPlaceSound: {fileID: 0}
   deckExpandSound: {fileID: 8300000, guid: fbfaf10691f0e4f6f9a0ac745e1eb24d, type: 3}
   deckCollapseSound: {fileID: 0}
+  npcDialogueSound: {fileID: 0}
+  npcBowSound: {fileID: 0}
+  npcJumpSound: {fileID: 0}
+  npcSitSound: {fileID: 0}
+  npcWaveSound: {fileID: 0}
+  npcAngrySound: {fileID: 0}
+  npcLaughSound: {fileID: 0}
   buttonVolume: 1
   cardVolume: 1
   deckVolume: 1
+  npcVolume: 1
 --- !u!4 &2028287192
 Transform:
   m_ObjectHideFlags: 0
