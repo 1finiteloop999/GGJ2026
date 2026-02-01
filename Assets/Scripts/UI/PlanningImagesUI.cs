@@ -3,17 +3,18 @@ using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
-/// 规划阶段图片UI - 管理关卡专属图片的渐显
+/// 规划阶段图片UI - 管理图片的渐显渐隐
+/// 图片直接在场景的Image组件上设置，不从LevelData读取
 /// </summary>
 public class PlanningImagesUI : MonoBehaviour
 {
     public static PlanningImagesUI Instance { get; private set; }
 
     [Header("Image Components")]
-    [Tooltip("First image component")]
+    [Tooltip("First image (set sprite directly on this component)")]
     [SerializeField] private Image image1;
 
-    [Tooltip("Second image component")]
+    [Tooltip("Second image (set sprite directly on this component)")]
     [SerializeField] private Image image2;
 
     [Header("Animation Settings")]
@@ -68,12 +69,8 @@ public class PlanningImagesUI : MonoBehaviour
     {
         if (phase == GamePhase.Planning)
         {
-            // Get current level data and show images
-            LevelData levelData = GameManager.Instance?.GetCurrentLevel();
-            if (levelData != null)
-            {
-                ShowImages(levelData.planningImage1, levelData.planningImage2);
-            }
+            // Show images when entering planning phase
+            ShowImages();
         }
         else if (phase == GamePhase.Executing || phase == GamePhase.Result)
         {
@@ -83,9 +80,9 @@ public class PlanningImagesUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Setup and show images with fade in animation
+    /// Show images with fade in animation
     /// </summary>
-    public void ShowImages(Sprite sprite1, Sprite sprite2)
+    public void ShowImages()
     {
         // Stop any running coroutine
         if (fadeCoroutine != null)
@@ -93,37 +90,28 @@ public class PlanningImagesUI : MonoBehaviour
             StopCoroutine(fadeCoroutine);
         }
 
-        // Setup sprites
-        if (image1 != null)
+        // Check which images have sprites
+        bool hasImage1 = image1 != null && image1.sprite != null;
+        bool hasImage2 = image2 != null && image2.sprite != null;
+
+        // Setup images
+        if (hasImage1)
         {
-            if (sprite1 != null)
-            {
-                image1.sprite = sprite1;
-                image1.gameObject.SetActive(true);
-                SetImageAlpha(image1, 0f);
-            }
-            else
-            {
-                image1.gameObject.SetActive(false);
-            }
+            image1.gameObject.SetActive(true);
+            SetImageAlpha(image1, 0f);
         }
 
-        if (image2 != null)
+        if (hasImage2)
         {
-            if (sprite2 != null)
-            {
-                image2.sprite = sprite2;
-                image2.gameObject.SetActive(true);
-                SetImageAlpha(image2, 0f);
-            }
-            else
-            {
-                image2.gameObject.SetActive(false);
-            }
+            image2.gameObject.SetActive(true);
+            SetImageAlpha(image2, 0f);
         }
 
         // Start fade in animation
-        fadeCoroutine = StartCoroutine(FadeInSequence(sprite1 != null, sprite2 != null));
+        if (hasImage1 || hasImage2)
+        {
+            fadeCoroutine = StartCoroutine(FadeInSequence(hasImage1, hasImage2));
+        }
     }
 
     /// <summary>
@@ -172,17 +160,14 @@ public class PlanningImagesUI : MonoBehaviour
     private IEnumerator FadeOutSequence()
     {
         // Fade out both images simultaneously
-        Coroutine fade1 = null;
-        Coroutine fade2 = null;
-
         if (image1 != null && image1.gameObject.activeSelf)
         {
-            fade1 = StartCoroutine(FadeImage(image1, image1.color.a, 0f, fadeOutDuration));
+            StartCoroutine(FadeImage(image1, image1.color.a, 0f, fadeOutDuration));
         }
 
         if (image2 != null && image2.gameObject.activeSelf)
         {
-            fade2 = StartCoroutine(FadeImage(image2, image2.color.a, 0f, fadeOutDuration));
+            StartCoroutine(FadeImage(image2, image2.color.a, 0f, fadeOutDuration));
         }
 
         // Wait for fade out to complete
