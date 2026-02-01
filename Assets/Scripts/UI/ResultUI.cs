@@ -175,7 +175,7 @@ public class ResultUI : MonoBehaviour
     {
         if (statusText != null)
         {
-            statusText.text = passed ? "通关！" : "未通关";
+            statusText.text = passed ? "CLEAR!" : "FAILED";
             statusText.color = passed ? Color.green : Color.red;
         }
 
@@ -260,11 +260,11 @@ public class ResultUI : MonoBehaviour
     {
         if (detailText != null)
         {
-            string details = $"正确: {result.correctCount}/{result.totalSteps}\n";
+            string details = $"Correct: {result.correctCount}/{result.totalSteps}\n";
 
             if (levelData != null)
             {
-                details += $"\n分数线:\n";
+                details += $"\nScore Threshold:\n";
                 details += $"A: {levelData.scoreA}  S: {levelData.scoreS}\n";
                 details += $"SS: {levelData.scoreSS}  SSS: {levelData.scoreSSS}";
             }

@@ -110,7 +110,7 @@ public class UIManager : MonoBehaviour
     {
         if (pointsText != null)
         {
-            pointsText.text = $"点数: {points}";
+            pointsText.text = $"Points: {points}";
         }
     }
 
@@ -167,12 +167,12 @@ public class UIManager : MonoBehaviour
         {
             if (passed)
             {
-                resultText.text = $"通关！\n模仿度: {mimicryPercent}%";
+                resultText.text = $"CLEAR!\nMimicry: {mimicryPercent}%";
                 resultText.color = Color.green;
             }
             else
             {
-                resultText.text = $"未通过\n模仿度: {mimicryPercent}%";
+                resultText.text = $"FAILED\nMimicry: {mimicryPercent}%";
                 resultText.color = Color.red;
             }
         }
